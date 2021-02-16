@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 function Layers(props) {
+    const [keyweight, setKeyweight] = useState(1)
     const [visibility, setVisibility] = useState({
         cyan: true,
         magenta: true,
@@ -33,6 +34,10 @@ function Layers(props) {
         if (visibility.cyan) {
             for (var i = 0, n = pix.length; i < n; i += 4) {
                 pix[i + 0] = pix[i + 0] - (255 - props.imageData.pix[i + 0])
+
+                // Set keyweight
+                var m = Math.max(props.imageData.pix[i + 0], props.imageData.pix[i + 1], props.imageData.pix[i + 2])
+                pix[i + 0] = pix[i + 0] + (255 - m) * keyweight
             }
         }
 
@@ -40,6 +45,10 @@ function Layers(props) {
         if (visibility.magenta) {
             for (var i = 0, n = pix.length; i < n; i += 4) {
                 pix[i + 1] = pix[i + 1] - (255 - props.imageData.pix[i + 1])
+
+                // Set keyweight
+                var m = Math.max(props.imageData.pix[i + 0], props.imageData.pix[i + 1], props.imageData.pix[i + 2])
+                pix[i + 1] = pix[i + 1] + (255 - m) * keyweight
             }
         }
 
@@ -47,13 +56,20 @@ function Layers(props) {
         if (visibility.yellow) {
             for (var i = 0, n = pix.length; i < n; i += 4) {
                 pix[i + 2] = pix[i + 2] - (255 - props.imageData.pix[i + 2])
+
+                // Set keyweight
+                var m = Math.max(props.imageData.pix[i + 0], props.imageData.pix[i + 1], props.imageData.pix[i + 2])
+                pix[i + 2] = pix[i + 2] + (255 - m) * keyweight
             }
         }
 
         // Paint black plate
-        if (visibility.yellow) {
+        if (visibility.black) {
             for (var i = 0, n = pix.length; i < n; i += 4) {
-                pix[i + 2] = pix[i + 2] - (255 - props.imageData.pix[i + 2])
+                var m = Math.max(props.imageData.pix[i + 0], props.imageData.pix[i + 1], props.imageData.pix[i + 2])
+                pix[i + 0] = pix[i + 0] - (255 - m) * keyweight
+                pix[i + 1] = pix[i + 1] - (255 - m) * keyweight
+                pix[i + 2] = pix[i + 2] - (255 - m) * keyweight
             }
         }
 
@@ -117,7 +133,14 @@ function Layers(props) {
                 />
             </ul>
             <div className="card-footer">
-
+                <label class="form-label">{`Key Weight: ${keyweight * 100}%`}</label>
+                <input
+                    type="range"
+                    className="form-range"
+                    min="0"
+                    max="1"
+                    step="0.1"
+                    onChange={(e) => { setKeyweight(e.target.value) }} />
             </div>
         </div>
     )
