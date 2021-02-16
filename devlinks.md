@@ -1,0 +1,7 @@
+- [Get Pixel's x,y coordinate color from an image](https://stackoverflow.com/questions/8751020/how-to-get-a-pixels-x-y-coordinate-color-from-an-image/8751659)
+- [Functional vs class components in React](https://medium.com/@Zwenza/functional-vs-class-components-in-react-231e3fbd7108)
+- [Lifting up state in React](https://stackoverflow.com/questions/38394015/how-to-pass-data-from-child-component-to-its-parent-in-reactjs)
+- [HTML5 Canvas with React](https://blog.cloudboost.io/using-html5-canvas-with-react-ff7d93f5dc76)
+- [Hooks](https://reactjs.org/docs/hooks-reference.html#useref)
+- [Iterative pixel color data](https://stackoverflow.com/questions/667045/get-a-pixel-from-html-canvas)
+- [CMYK Model](https://www.rapidtables.com/convert/color/rgb-to-cmyk.html)

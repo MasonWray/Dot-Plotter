@@ -8,17 +8,20 @@ function Layers(props) {
         black: true
     })
 
+    // Apply layer visibility
     if (props.imageData) {
+
         // Clear the preview canvas and set it to the correct size
         var canvas = props.canvas.current;
         var context = canvas.getContext("2d");
         canvas.height = props.imageData.height;
         canvas.width = props.imageData.width;
 
+        // Get ImageData for per-pixel editing
         var imgd = context.getImageData(0, 0, props.imageData.width, props.imageData.height);
         var pix = imgd.data;
 
-        // Apply layer visibility
+        // Start with white paper
         for (var i = 0, n = pix.length; i < n; i += 4) {
             pix[i + 0] = 255; // red
             pix[i + 1] = 255; // green
@@ -47,44 +50,12 @@ function Layers(props) {
             }
         }
 
-        // Switch
-        // for (var i = 0, n = pix.length; i < n; i += 4) {
-        // var k = Math.max(props.imageData.pix[i + 0], props.imageData.pix[i + 1], props.imageData.pix[i + 2]);
-        // pix[i + 0] = visibility.cyan ? props.imageData.pix[i + 0] : 255; // red
-        // pix[i + 1] = visibility.magenta ? props.imageData.pix[i + 1] : 255; // green
-        // pix[i + 2] = visibility.yellow ? props.imageData.pix[i + 2] : 255; // blue
-
-        // pix[i + 0] = visibility.black ? pix[i + 0] - (255 - pix[i + 0]) : pix[i + 0];
-        // pix[i + 1] = visibility.black ? pix[i + 1] - (255 - pix[i + 1]) : pix[i + 1];
-        // pix[i + 2] = visibility.black ? pix[i + 2] - (255 - pix[i + 2]) : pix[i + 2];
-        // pix[i + 3] = 255 / 2; // alpha
-        // }
-
-        // Original
-        // for (var i = 0, n = pix.length; i < n; i += 4) {
-        //     pix[i + 0] = props.imageData.pix[i + 0]; // red
-        //     pix[i + 1] = props.imageData.pix[i + 1]; // green
-        //     pix[i + 2] = props.imageData.pix[i + 2]; // blue
-        //     pix[i + 3] = props.imageData.pix[i + 3]; // alpha
-        // }
-
-        // Cyan
-        // for (var i = 0, n = pix.length; i < n; i += 4) {
-        //     pix[i + 0] = props.imageData.pix[i + 0]; // red
-        //     pix[i + 1] = props.imageData.pix[i + 1]; // green
-        //     pix[i + 2] = props.imageData.pix[i + 2]; // blue
-        //     pix[i + 3] = 255 / 2; // alpha
-        // }
-
-        // Black
-        // for (var i = 0, n = pix.length; i < n; i += 4) {
-        //     var k = Math.max(props.imageData.pix[i + 0], props.imageData.pix[i + 1], props.imageData.pix[i + 2]);
-        //     pix[i + 0] = 0; // red
-        //     pix[i + 1] = 255; // green
-        //     pix[i + 2] = 255; // blue
-        //     pix[i + 3] = 255; // alpha
-        // }
-
+        // Paint black plate
+        if (visibility.yellow) {
+            for (var i = 0, n = pix.length; i < n; i += 4) {
+                pix[i + 2] = pix[i + 2] - (255 - props.imageData.pix[i + 2])
+            }
+        }
 
         context.putImageData(imgd, 0, 0);
     }
@@ -145,6 +116,9 @@ function Layers(props) {
                     }}
                 />
             </ul>
+            <div className="card-footer">
+
+            </div>
         </div>
     )
 }
