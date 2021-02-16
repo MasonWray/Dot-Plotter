@@ -9,15 +9,9 @@ function Body() {
     // Source file
     const [imageData, setImageData] = useState(null)
     const sendImageData = (d) => { setImageData(d) }
-    const [file, setFile] = useState(null);
-    const sendFile = (f) => { setFile(f) }
 
     // Preview canvas reference
     const canvas = useRef(null);
-
-    // Preview canvas size setter
-    const [imgSize, setSize] = useState({ width: 0, height: 0 });
-    const sendSize = (s) => { setSize(s) }
 
     return (
         <div className="container-fluid">
@@ -25,16 +19,12 @@ function Body() {
                 {/* Left Sidebar */}
                 <div className="col-sm-3">
                     <FileSelector
-                        file={file}
                         canvas={canvas}
-                        setFile={sendFile}
                         sendImageData={sendImageData}
                     />
 
                     <Layers
-                        file={file}
                         canvas={canvas}
-                        setSize={sendSize}
                         imageData={imageData}
                     />
                 </div>
@@ -42,7 +32,6 @@ function Body() {
                 <div className="col-sm-6">
                     <Preview
                         canvasRef={canvas}
-                        size={imgSize}
                     />
                 </div>
                 {/* Right Sidebar */}
