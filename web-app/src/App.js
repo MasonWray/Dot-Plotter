@@ -1,23 +1,19 @@
-import logo from './logo.svg';
+// import '../node_modules/popper.js/dist/popper.js';
+// import '../node_modules/jquery/dist/jquery.js';
+import '../node_modules/bootstrap/dist/css/bootstrap.css';
+// import '../node_modules/bootstrap/dist/js/bootstrap.js';
+import '../node_modules/bootstrap/dist/js/bootstrap.bundle'
+
 import './App.css';
+
+import Navbar from './components/Navbar';
+import Body from './components/Body';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Navbar />
+      <Body />
     </div>
   );
 }
