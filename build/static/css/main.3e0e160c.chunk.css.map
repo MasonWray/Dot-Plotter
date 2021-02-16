@@ -1,1 +1,0 @@
-{"version":3,"sources":["webpack://src/App.css"],"names":[],"mappings":"AAAA,MACI,iBACJ,CAMA,aACI,WACJ,CAEA,UACI,UACJ","file":"main.3e0e160c.chunk.css","sourcesContent":[".card {\r\n    margin-top: 1.5rem;\r\n}\r\n\r\n/* canvas {\r\n    border: 1px solid black;\r\n} */\r\n\r\n.float-right {\r\n    float: right;\r\n}\r\n\r\n.clearfix {\r\n    clear: both;\r\n}"]}
