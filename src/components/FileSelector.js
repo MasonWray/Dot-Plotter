@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useRef } from "react";
 
 function FileSelector(props) {
+
+    const scratch = useRef();
     const handleFileChange = (e) => {
         var file = e.target.files[0];
 
@@ -10,7 +12,7 @@ function FileSelector(props) {
             var img = new Image();
             fr.onload = () => {
                 // Set the canvas size and draw the original image to it
-                var canvas = props.canvas.current;
+                var canvas = scratch.current;
                 var context = canvas.getContext("2d");
                 img.src = fr.result;
                 img.onload = () => {
@@ -35,6 +37,7 @@ function FileSelector(props) {
 
     return (
         <div className="card">
+            <canvas className="scratch-canvas" ref={scratch}></canvas>
             <div className="card-header">File Selector</div>
             <div className="card-body">
                 <div className="form-group">

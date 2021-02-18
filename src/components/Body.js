@@ -7,11 +7,7 @@ import VectorOverlay from './VectorOverlay';
 
 function Body() {
     // Source file
-    const [imageData, setImageData] = useState(null)
-    const sendImageData = (d) => { setImageData(d) }
-
-    // Preview canvas reference
-    const canvas = useRef();
+    const [imageData, setImageData] = useState()
 
     // Layer data
     const [layerData, setLayerData] = useState({
@@ -30,8 +26,7 @@ function Body() {
                 {/* Left Sidebar */}
                 <div className="col-sm-3">
                     <FileSelector
-                        canvas={canvas}
-                        sendImageData={sendImageData}
+                        sendImageData={(d) => setImageData(d)}
                     />
 
                     <Layers
@@ -42,7 +37,6 @@ function Body() {
                 {/* Preview Area */}
                 <div className="col-sm-6">
                     <Preview
-                        canvasRef={canvas}
                         imageData={imageData}
                         layerData={layerData}
                     />

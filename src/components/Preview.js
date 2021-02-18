@@ -80,14 +80,15 @@ function drawRasterLayers(outputCanvasRef, imageData, keyweight, layerVis, scali
 
 function Preview(props) {
     const previewRef = useRef();
+    const canvasRef = useRef();
 
     // Depend on size of preview card
     useElementSize(previewRef);
 
     // Draw preview on canvas if necessary data is available
-    if (props.canvasRef && props.imageData && previewRef) {
+    if (canvasRef && props.imageData && previewRef) {
         var scalingFactor = (previewRef.current.getBoundingClientRect().width - 20) / props.imageData.width;
-        drawRasterLayers(props.canvasRef, props.imageData, props.layerData.keyweight, props.layerData.visibility, scalingFactor);
+        drawRasterLayers(canvasRef, props.imageData, props.layerData.keyweight, props.layerData.visibility, scalingFactor);
     }
 
     return (
@@ -96,7 +97,7 @@ function Preview(props) {
                 {"Preview"}
             </div>
             <div className="card-body d-flex justify-content-center">
-                <canvas ref={props.canvasRef}></canvas>
+                <canvas ref={canvasRef}></canvas>
             </div>
         </div >
     )
