@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useLayoutEffect } from 'react';
 
 import FileSelector from './FileSelector';
 import Layers from './Layers';
@@ -12,6 +12,7 @@ function Body() {
 
     // Preview canvas reference
     const canvas = useRef(null);
+    const previewRef = useRef();
 
     return (
         <div className="container-fluid">
@@ -26,12 +27,14 @@ function Body() {
                     <Layers
                         canvas={canvas}
                         imageData={imageData}
+                        previewRef={previewRef}
                     />
                 </div>
                 {/* Preview Area */}
                 <div className="col-sm-6">
                     <Preview
                         canvasRef={canvas}
+                        previewRef={previewRef}
                     />
                 </div>
                 {/* Right Sidebar */}

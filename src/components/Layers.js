@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useLayoutEffect } from "react";
 
 function Layers(props) {
     const [keyweight, setKeyweight] = useState(1)
@@ -73,7 +73,21 @@ function Layers(props) {
             }
         }
 
-        context.putImageData(imgd, 0, 0);
+        // Load canvas data into temp image
+
+
+
+        canvas.height = props.imageData.height;
+        canvas.width = props.imageData.width;
+        // context.scale(2, 2);
+
+        // context.putImageData(imgd, 0, 0);
+
+        // context.strokeRect(5, 5, 25, 15);
+        context.scale(2, 2);
+        context.strokeRect(5, 5, 25, 15);
+        // context.scale(2, 2);
+        // console.log(props.previewRef.current.getBoundingClientRect().width);
     }
 
     return (
@@ -133,7 +147,7 @@ function Layers(props) {
                 />
             </ul>
             <div className="card-footer">
-                <label class="form-label">{`Key Weight: ${keyweight * 100}%`}</label>
+                <label className="form-label">{`Key Weight: ${keyweight * 100}%`}</label>
                 <input
                     type="range"
                     className="form-range"
