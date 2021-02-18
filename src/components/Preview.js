@@ -16,7 +16,7 @@ function useElementSize(eRef) {
     return size;
 }
 
-function drawLayers(outputCanvasRef, image, keyweight, layerVis, scalingFactor) {
+function drawRasterLayers(outputCanvasRef, image, keyweight, layerVis, scalingFactor) {
 
     // Clear the preview canvas and set it to the correct size
     var canvas = outputCanvasRef.current;
@@ -75,7 +75,6 @@ function drawLayers(outputCanvasRef, image, keyweight, layerVis, scalingFactor) 
         canvas.width = image.width * scalingFactor;
         context.scale(scalingFactor, scalingFactor)
         context.drawImage(imageObject, 0, 0);
-        // drawVectorLayers(outputCanvasRef);
     }
     imageObject.src = canvas.toDataURL();
 }
@@ -89,7 +88,7 @@ function Preview(props) {
 
     if (canvasRef && props.image && previewRef) {
         var scalingFactor = (previewRef.current.getBoundingClientRect().width - 20) / props.image.width;
-        drawLayers(canvasRef, props.image, props.layerData.keyweight, props.layerData.visibility, scalingFactor);
+        drawRasterLayers(canvasRef, props.image, props.layerData.keyweight, props.layerData.visibility, scalingFactor);
     }
 
     return (
