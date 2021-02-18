@@ -1,5 +1,66 @@
 import React, { useState } from "react";
 
+function drawPreview(outputCanvasRef, imageData, keyweight, layerVis, scalingFactor) {
+
+    // Clear the preview canvas and set it to the correct size
+    var canvas = outputCanvasRef.current;
+    var context = canvas.getContext("2d");
+    canvas.height = imageData.height;
+    canvas.width = imageData.width;
+
+    // Get ImageData for per-pixel editing
+    var imgd = context.getImageData(0, 0, imageData.width, imageData.height);
+    var pix = imgd.data;
+
+    for (var i = 0, n = pix.length; i < n; i += 4) {
+        // Calcualte key weight
+        var m = Math.max(imageData.pix[i + 0], imageData.pix[i + 1], imageData.pix[i + 2])
+
+        // Start with white paper
+        pix[i + 0] = 255; // red
+        pix[i + 1] = 255; // green
+        pix[i + 2] = 255; // blue
+        pix[i + 3] = 255; // alpha
+
+        // Paint cyan plate
+        if (layerVis.cyan) {
+            pix[i + 0] = pix[i + 0] - (255 - imageData.pix[i + 0])
+            pix[i + 0] = pix[i + 0] + (255 - m) * keyweight
+        }
+
+        // Paint magenta plate
+        if (layerVis.magenta) {
+            pix[i + 1] = pix[i + 1] - (255 - imageData.pix[i + 1])
+            pix[i + 1] = pix[i + 1] + (255 - m) * keyweight
+        }
+
+        // Paint yellow plate
+        if (layerVis.yellow) {
+            pix[i + 2] = pix[i + 2] - (255 - imageData.pix[i + 2])
+            pix[i + 2] = pix[i + 2] + (255 - m) * keyweight
+        }
+
+        // Paint black plate
+        if (layerVis.black) {
+            pix[i + 0] = pix[i + 0] - (255 - m) * keyweight
+            pix[i + 1] = pix[i + 1] - (255 - m) * keyweight
+            pix[i + 2] = pix[i + 2] - (255 - m) * keyweight
+        }
+    }
+
+    // Scale preview to card size
+    var imageObject = new Image();
+    context.putImageData(imgd, 0, 0);
+
+    imageObject.onload = () => {
+        canvas.height = imageData.height * scalingFactor;
+        canvas.width = imageData.width * scalingFactor;
+        context.scale(scalingFactor, scalingFactor)
+        context.drawImage(imageObject, 0, 0);
+    }
+    imageObject.src = canvas.toDataURL();
+}
+
 function Layers(props) {
     const [keyweight, setKeyweight] = useState(1)
     const [visibility, setVisibility] = useState({
@@ -9,83 +70,10 @@ function Layers(props) {
         black: true
     })
 
-    // Apply layer visibility
-    if (props.imageData) {
 
-        // console.log("Drawing preview")
-
-        // Clear the preview canvas and set it to the correct size
-        var canvas = props.canvas.current;
-        var context = canvas.getContext("2d");
-        canvas.height = props.imageData.height;
-        canvas.width = props.imageData.width;
-
-        // Get ImageData for per-pixel editing
-        var imgd = context.getImageData(0, 0, props.imageData.width, props.imageData.height);
-        var pix = imgd.data;
-
-        // Start with white paper
-        for (var i = 0, n = pix.length; i < n; i += 4) {
-            pix[i + 0] = 255; // red
-            pix[i + 1] = 255; // green
-            pix[i + 2] = 255; // blue
-            pix[i + 3] = 255; // alpha
-        }
-
-        // Paint cyan plate
-        if (visibility.cyan) {
-            for (var i = 0, n = pix.length; i < n; i += 4) {
-                pix[i + 0] = pix[i + 0] - (255 - props.imageData.pix[i + 0])
-
-                // Set keyweight
-                var m = Math.max(props.imageData.pix[i + 0], props.imageData.pix[i + 1], props.imageData.pix[i + 2])
-                pix[i + 0] = pix[i + 0] + (255 - m) * keyweight
-            }
-        }
-
-        // Paint magenta plate
-        if (visibility.magenta) {
-            for (var i = 0, n = pix.length; i < n; i += 4) {
-                pix[i + 1] = pix[i + 1] - (255 - props.imageData.pix[i + 1])
-
-                // Set keyweight
-                var m = Math.max(props.imageData.pix[i + 0], props.imageData.pix[i + 1], props.imageData.pix[i + 2])
-                pix[i + 1] = pix[i + 1] + (255 - m) * keyweight
-            }
-        }
-
-        // Paint yellow plate
-        if (visibility.yellow) {
-            for (var i = 0, n = pix.length; i < n; i += 4) {
-                pix[i + 2] = pix[i + 2] - (255 - props.imageData.pix[i + 2])
-
-                // Set keyweight
-                var m = Math.max(props.imageData.pix[i + 0], props.imageData.pix[i + 1], props.imageData.pix[i + 2])
-                pix[i + 2] = pix[i + 2] + (255 - m) * keyweight
-            }
-        }
-
-        // Paint black plate
-        if (visibility.black) {
-            for (var i = 0, n = pix.length; i < n; i += 4) {
-                var m = Math.max(props.imageData.pix[i + 0], props.imageData.pix[i + 1], props.imageData.pix[i + 2])
-                pix[i + 0] = pix[i + 0] - (255 - m) * keyweight
-                pix[i + 1] = pix[i + 1] - (255 - m) * keyweight
-                pix[i + 2] = pix[i + 2] - (255 - m) * keyweight
-            }
-        }
-
-        var imageObject = new Image();
+    if (props.canvas && props.imageData) {
         var scalingFactor = (props.previewRef.current.getBoundingClientRect().width - 20) / props.imageData.width;
-        context.putImageData(imgd, 0, 0);
-
-        imageObject.onload = () => {
-            canvas.height = props.imageData.height * scalingFactor;
-            canvas.width = props.imageData.width * scalingFactor;
-            context.scale(scalingFactor, scalingFactor)
-            context.drawImage(imageObject, 0, 0);
-        }
-        imageObject.src = canvas.toDataURL();
+        drawPreview(props.canvas, props.imageData, keyweight, visibility, scalingFactor);
     }
 
     return (
