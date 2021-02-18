@@ -1,4 +1,4 @@
-import React, { useState, useRef, useLayoutEffect } from 'react';
+import React, { useState, useRef } from 'react';
 
 import FileSelector from './FileSelector';
 import Layers from './Layers';

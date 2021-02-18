@@ -2,7 +2,6 @@ function VectorOverlay() {
     return (
         <div className="card">
             <div className="card-header">Vector Overlay</div>
-            {/* <div className="card-body"> */}
             <ul className="list-group list-group-flush">
                 <li className="list-group-item">
                     <div className="form-check form-switch">
@@ -39,7 +38,6 @@ function VectorOverlay() {
                     </div>
                 </li>
             </ul>
-            {/* </div> */}
         </div>
     )
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
 function Layers(props) {
     const [keyweight, setKeyweight] = useState(1)
@@ -80,7 +80,6 @@ function Layers(props) {
         context.putImageData(imgd, 0, 0);
 
         imageObject.onload = () => {
-            console.log("Image Loaded!")
             canvas.height = props.imageData.height * scalingFactor;
             canvas.width = props.imageData.width * scalingFactor;
             context.scale(scalingFactor, scalingFactor)
