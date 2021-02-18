@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 
 import FileSelector from './FileSelector';
 import Layers from './Layers';
@@ -7,7 +7,7 @@ import VectorOverlay from './VectorOverlay';
 
 function Body() {
     // Source file
-    const [imageData, setImageData] = useState()
+    const [image, setImage] = useState();
 
     // Layer data
     const [layerData, setLayerData] = useState({
@@ -26,7 +26,7 @@ function Body() {
                 {/* Left Sidebar */}
                 <div className="col-sm-3">
                     <FileSelector
-                        sendImageData={(d) => setImageData(d)}
+                        setImage={(i) => setImage(i)}
                     />
 
                     <Layers
@@ -37,7 +37,7 @@ function Body() {
                 {/* Preview Area */}
                 <div className="col-sm-6">
                     <Preview
-                        imageData={imageData}
+                        image={image}
                         layerData={layerData}
                     />
                 </div>

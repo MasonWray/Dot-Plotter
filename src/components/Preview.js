@@ -16,21 +16,23 @@ function useElementSize(eRef) {
     return size;
 }
 
-function drawRasterLayers(outputCanvasRef, imageData, keyweight, layerVis, scalingFactor) {
+function drawLayers(outputCanvasRef, image, keyweight, layerVis, scalingFactor) {
 
     // Clear the preview canvas and set it to the correct size
     var canvas = outputCanvasRef.current;
     var context = canvas.getContext("2d");
-    canvas.height = imageData.height;
-    canvas.width = imageData.width;
+    canvas.height = image.height;
+    canvas.width = image.width;
+    context.drawImage(image, 0, 0)
 
     // Get ImageData for per-pixel editing
-    var imgd = context.getImageData(0, 0, imageData.width, imageData.height);
+    var imgd = context.getImageData(0, 0, image.width, image.height);
+    var src = [...imgd.data];
     var pix = imgd.data;
 
     for (var i = 0, n = pix.length; i < n; i += 4) {
         // Calcualte key weight
-        var m = Math.max(imageData.pix[i + 0], imageData.pix[i + 1], imageData.pix[i + 2])
+        var m = Math.max(src[i + 0], src[i + 1], src[i + 2])
 
         // Start with white paper
         pix[i + 0] = 255; // red
@@ -40,19 +42,19 @@ function drawRasterLayers(outputCanvasRef, imageData, keyweight, layerVis, scali
 
         // Paint cyan plate
         if (layerVis.cyan) {
-            pix[i + 0] = pix[i + 0] - (255 - imageData.pix[i + 0])
+            pix[i + 0] = pix[i + 0] - (255 - src[i + 0])
             pix[i + 0] = pix[i + 0] + (255 - m) * keyweight
         }
 
         // Paint magenta plate
         if (layerVis.magenta) {
-            pix[i + 1] = pix[i + 1] - (255 - imageData.pix[i + 1])
+            pix[i + 1] = pix[i + 1] - (255 - src[i + 1])
             pix[i + 1] = pix[i + 1] + (255 - m) * keyweight
         }
 
         // Paint yellow plate
         if (layerVis.yellow) {
-            pix[i + 2] = pix[i + 2] - (255 - imageData.pix[i + 2])
+            pix[i + 2] = pix[i + 2] - (255 - src[i + 2])
             pix[i + 2] = pix[i + 2] + (255 - m) * keyweight
         }
 
@@ -64,13 +66,13 @@ function drawRasterLayers(outputCanvasRef, imageData, keyweight, layerVis, scali
         }
     }
 
-    // Scale preview to card size
+    // // Scale preview to card size
     var imageObject = new Image();
     context.putImageData(imgd, 0, 0);
 
     imageObject.onload = () => {
-        canvas.height = imageData.height * scalingFactor;
-        canvas.width = imageData.width * scalingFactor;
+        canvas.height = image.height * scalingFactor;
+        canvas.width = image.width * scalingFactor;
         context.scale(scalingFactor, scalingFactor)
         context.drawImage(imageObject, 0, 0);
         // drawVectorLayers(outputCanvasRef);
@@ -85,10 +87,9 @@ function Preview(props) {
     // Depend on size of preview card
     useElementSize(previewRef);
 
-    // Draw preview on canvas if necessary data is available
-    if (canvasRef && props.imageData && previewRef) {
-        var scalingFactor = (previewRef.current.getBoundingClientRect().width - 20) / props.imageData.width;
-        drawRasterLayers(canvasRef, props.imageData, props.layerData.keyweight, props.layerData.visibility, scalingFactor);
+    if (canvasRef && props.image && previewRef) {
+        var scalingFactor = (previewRef.current.getBoundingClientRect().width - 20) / props.image.width;
+        drawLayers(canvasRef, props.image, props.layerData.keyweight, props.layerData.visibility, scalingFactor);
     }
 
     return (
