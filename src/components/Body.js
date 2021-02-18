@@ -14,6 +14,17 @@ function Body() {
     const canvas = useRef(null);
     const previewRef = useRef();
 
+    // Layer data
+    const [layerData, setLayerData] = useState({
+        keyweight: 1,
+        visibility: {
+            cyan: true,
+            magenta: true,
+            yellow: true,
+            black: true
+        }
+    })
+
     return (
         <div className="container-fluid">
             <div className="row">
@@ -25,15 +36,16 @@ function Body() {
                     />
 
                     <Layers
-                        canvas={canvas}
-                        imageData={imageData}
-                        previewRef={previewRef}
+                        layerData={layerData}
+                        setLayerData={(l) => setLayerData(l)}
                     />
                 </div>
                 {/* Preview Area */}
                 <div className="col-sm-6">
                     <Preview
                         canvasRef={canvas}
+                        imageData={imageData}
+                        layerData={layerData}
                         previewRef={previewRef}
                     />
                 </div>

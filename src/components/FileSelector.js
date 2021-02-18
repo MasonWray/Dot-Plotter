@@ -1,3 +1,5 @@
+import React from "react";
+
 function FileSelector(props) {
     const handleFileChange = (e) => {
         var file = e.target.files[0];

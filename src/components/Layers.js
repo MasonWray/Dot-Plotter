@@ -1,80 +1,6 @@
-import React, { useState } from "react";
-
-function drawPreview(outputCanvasRef, imageData, keyweight, layerVis, scalingFactor) {
-
-    // Clear the preview canvas and set it to the correct size
-    var canvas = outputCanvasRef.current;
-    var context = canvas.getContext("2d");
-    canvas.height = imageData.height;
-    canvas.width = imageData.width;
-
-    // Get ImageData for per-pixel editing
-    var imgd = context.getImageData(0, 0, imageData.width, imageData.height);
-    var pix = imgd.data;
-
-    for (var i = 0, n = pix.length; i < n; i += 4) {
-        // Calcualte key weight
-        var m = Math.max(imageData.pix[i + 0], imageData.pix[i + 1], imageData.pix[i + 2])
-
-        // Start with white paper
-        pix[i + 0] = 255; // red
-        pix[i + 1] = 255; // green
-        pix[i + 2] = 255; // blue
-        pix[i + 3] = 255; // alpha
-
-        // Paint cyan plate
-        if (layerVis.cyan) {
-            pix[i + 0] = pix[i + 0] - (255 - imageData.pix[i + 0])
-            pix[i + 0] = pix[i + 0] + (255 - m) * keyweight
-        }
-
-        // Paint magenta plate
-        if (layerVis.magenta) {
-            pix[i + 1] = pix[i + 1] - (255 - imageData.pix[i + 1])
-            pix[i + 1] = pix[i + 1] + (255 - m) * keyweight
-        }
-
-        // Paint yellow plate
-        if (layerVis.yellow) {
-            pix[i + 2] = pix[i + 2] - (255 - imageData.pix[i + 2])
-            pix[i + 2] = pix[i + 2] + (255 - m) * keyweight
-        }
-
-        // Paint black plate
-        if (layerVis.black) {
-            pix[i + 0] = pix[i + 0] - (255 - m) * keyweight
-            pix[i + 1] = pix[i + 1] - (255 - m) * keyweight
-            pix[i + 2] = pix[i + 2] - (255 - m) * keyweight
-        }
-    }
-
-    // Scale preview to card size
-    var imageObject = new Image();
-    context.putImageData(imgd, 0, 0);
-
-    imageObject.onload = () => {
-        canvas.height = imageData.height * scalingFactor;
-        canvas.width = imageData.width * scalingFactor;
-        context.scale(scalingFactor, scalingFactor)
-        context.drawImage(imageObject, 0, 0);
-    }
-    imageObject.src = canvas.toDataURL();
-}
+import React from "react";
 
 function Layers(props) {
-    const [keyweight, setKeyweight] = useState(1)
-    const [visibility, setVisibility] = useState({
-        cyan: true,
-        magenta: true,
-        yellow: true,
-        black: true
-    })
-
-
-    if (props.canvas && props.imageData) {
-        var scalingFactor = (props.previewRef.current.getBoundingClientRect().width - 20) / props.imageData.width;
-        drawPreview(props.canvas, props.imageData, keyweight, visibility, scalingFactor);
-    }
 
     return (
         <div className="card">
@@ -85,62 +11,85 @@ function Layers(props) {
             <ul className="list-group list-group-flush">
                 <Layer
                     name="Cyan"
-                    visible={visibility.cyan}
+                    visible={props.layerData.visibility.cyan}
                     onClick={() => {
-                        setVisibility({
-                            cyan: !visibility.cyan,
-                            magenta: visibility.magenta,
-                            yellow: visibility.yellow,
-                            black: visibility.black
+                        props.setLayerData({
+                            keyweight: props.layerData.keyweight,
+                            visibility: {
+                                cyan: !props.layerData.visibility.cyan,
+                                magenta: props.layerData.visibility.magenta,
+                                yellow: props.layerData.visibility.yellow,
+                                black: props.layerData.visibility.black
+                            }
                         })
                     }}
                 />
                 <Layer
                     name="Magenta"
-                    visible={visibility.magenta}
+                    visible={props.layerData.visibility.magenta}
                     onClick={() => {
-                        setVisibility({
-                            cyan: visibility.cyan,
-                            magenta: !visibility.magenta,
-                            yellow: visibility.yellow,
-                            black: visibility.black
+                        props.setLayerData({
+                            keyweight: props.layerData.keyweight,
+                            visibility: {
+                                cyan: props.layerData.visibility.cyan,
+                                magenta: !props.layerData.visibility.magenta,
+                                yellow: props.layerData.visibility.yellow,
+                                black: props.layerData.visibility.black
+                            }
                         })
                     }}
                 />
                 <Layer
                     name="Yellow"
-                    visible={visibility.yellow}
+                    visible={props.layerData.visibility.yellow}
                     onClick={() => {
-                        setVisibility({
-                            cyan: visibility.cyan,
-                            magenta: visibility.magenta,
-                            yellow: !visibility.yellow,
-                            black: visibility.black
+                        props.setLayerData({
+                            keyweight: props.layerData.keyweight,
+                            visibility: {
+                                cyan: props.layerData.visibility.cyan,
+                                magenta: props.layerData.visibility.magenta,
+                                yellow: !props.layerData.visibility.yellow,
+                                black: props.layerData.visibility.black
+                            }
                         })
                     }}
                 />
                 <Layer
                     name="Black"
-                    visible={visibility.black}
+                    visible={props.layerData.visibility.black}
                     onClick={() => {
-                        setVisibility({
-                            cyan: visibility.cyan,
-                            magenta: visibility.magenta,
-                            yellow: visibility.yellow,
-                            black: !visibility.black
+                        props.setLayerData({
+                            keyweight: props.layerData.keyweight,
+                            visibility: {
+                                cyan: props.layerData.visibility.cyan,
+                                magenta: props.layerData.visibility.magenta,
+                                yellow: props.layerData.visibility.yellow,
+                                black: !props.layerData.visibility.black
+                            }
                         })
                     }}
                 />
             </ul>
             <div className="card-footer">
-                <label className="form-label">{`Key Weight: ${keyweight * 100}%`}</label>
+                <label className="form-label">{`Key Weight: ${props.layerData.keyweight * 100}%`}</label>
                 <input
                     type="range"
                     className="form-range"
                     min="0"
                     max="1"
                     step="0.1"
-                    onChange={(e) => { setKeyweight(e.target.value) }} />
+                    onChange={(e) => {
+                        props.setLayerData({
+                            keyweight: e.target.value,
+                            visibility: {
+                                cyan: props.layerData.visibility.cyan,
+                                magenta: props.layerData.visibility.magenta,
+                                yellow: props.layerData.visibility.yellow,
+                                black: props.layerData.visibility.black
+                            }
+                        })
+                    }}
+                />
             </div>
         </div>
     )

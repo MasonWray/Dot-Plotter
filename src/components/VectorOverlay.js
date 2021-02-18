@@ -1,3 +1,5 @@
+import React from "react";
+
 function VectorOverlay() {
     return (
         <div className="card">
