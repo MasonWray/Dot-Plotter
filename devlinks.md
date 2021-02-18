@@ -5,3 +5,4 @@
 - [Hooks](https://reactjs.org/docs/hooks-reference.html#useref)
 - [Iterative pixel color data](https://stackoverflow.com/questions/667045/get-a-pixel-from-html-canvas)
 - [CMYK Model](https://www.rapidtables.com/convert/color/rgb-to-cmyk.html)
+- [Scaling an image on a canvas](https://stackoverflow.com/questions/24429830/html5-canvas-how-to-change-putimagedata-scale)

@@ -3,7 +3,7 @@ import React, { useState, useRef, useLayoutEffect } from 'react';
 import FileSelector from './FileSelector';
 import Layers from './Layers';
 import Preview from './Preview';
-import Parameters from './Parameters';
+import VectorOverlay from './VectorOverlay';
 
 function Body() {
     // Source file
@@ -39,7 +39,9 @@ function Body() {
                 </div>
                 {/* Right Sidebar */}
                 <div className="col-sm-3">
-                    <Parameters />
+                    <VectorOverlay
+                        previewCanvas={canvas}
+                    />
                 </div>
             </div>
         </div>
