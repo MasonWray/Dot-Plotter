@@ -12,6 +12,8 @@ function Layers(props) {
     // Apply layer visibility
     if (props.imageData) {
 
+        // console.log("Drawing preview")
+
         // Clear the preview canvas and set it to the correct size
         var canvas = props.canvas.current;
         var context = canvas.getContext("2d");
@@ -73,21 +75,18 @@ function Layers(props) {
             }
         }
 
-        // Load canvas data into temp image
+        var imageObject = new Image();
+        var scalingFactor = (props.previewRef.current.getBoundingClientRect().width - 20) / props.imageData.width;
+        context.putImageData(imgd, 0, 0);
 
-
-
-        canvas.height = props.imageData.height;
-        canvas.width = props.imageData.width;
-        // context.scale(2, 2);
-
-        // context.putImageData(imgd, 0, 0);
-
-        // context.strokeRect(5, 5, 25, 15);
-        context.scale(2, 2);
-        context.strokeRect(5, 5, 25, 15);
-        // context.scale(2, 2);
-        // console.log(props.previewRef.current.getBoundingClientRect().width);
+        imageObject.onload = () => {
+            console.log("Image Loaded!")
+            canvas.height = props.imageData.height * scalingFactor;
+            canvas.width = props.imageData.width * scalingFactor;
+            context.scale(scalingFactor, scalingFactor)
+            context.drawImage(imageObject, 0, 0);
+        }
+        imageObject.src = canvas.toDataURL();
     }
 
     return (
