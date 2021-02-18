@@ -20,6 +20,13 @@ function Body() {
         }
     })
 
+    // Vector data
+    const [vectorData, setVectorData] = useState({
+        width: 0,
+        height: 0,
+        toolDiameter: 0.4
+    });
+
     return (
         <div className="container-fluid">
             <div className="row">
@@ -43,7 +50,11 @@ function Body() {
                 </div>
                 {/* Right Sidebar */}
                 <div className="col-sm-3">
-                    <VectorOverlay />
+                    <VectorOverlay
+                        image={image}
+                        vectorData={vectorData}
+                        setVectorData={(v) => setVectorData(v)}
+                    />
                 </div>
             </div>
         </div>
