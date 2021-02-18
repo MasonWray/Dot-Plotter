@@ -11,8 +11,7 @@ function Body() {
     const sendImageData = (d) => { setImageData(d) }
 
     // Preview canvas reference
-    const canvas = useRef(null);
-    const previewRef = useRef();
+    const canvas = useRef();
 
     // Layer data
     const [layerData, setLayerData] = useState({
@@ -46,14 +45,11 @@ function Body() {
                         canvasRef={canvas}
                         imageData={imageData}
                         layerData={layerData}
-                        previewRef={previewRef}
                     />
                 </div>
                 {/* Right Sidebar */}
                 <div className="col-sm-3">
-                    <VectorOverlay
-                        previewCanvas={canvas}
-                    />
+                    <VectorOverlay />
                 </div>
             </div>
         </div>

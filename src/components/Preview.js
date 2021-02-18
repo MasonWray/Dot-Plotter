@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState, useLayoutEffect, useRef } from 'react';
 
 // Get current size of given element when it is resized
 function useElementSize(eRef) {
@@ -16,7 +16,7 @@ function useElementSize(eRef) {
     return size;
 }
 
-function drawPreview(outputCanvasRef, imageData, keyweight, layerVis, scalingFactor) {
+function drawRasterLayers(outputCanvasRef, imageData, keyweight, layerVis, scalingFactor) {
 
     // Clear the preview canvas and set it to the correct size
     var canvas = outputCanvasRef.current;
@@ -73,23 +73,24 @@ function drawPreview(outputCanvasRef, imageData, keyweight, layerVis, scalingFac
         canvas.width = imageData.width * scalingFactor;
         context.scale(scalingFactor, scalingFactor)
         context.drawImage(imageObject, 0, 0);
+        // drawVectorLayers(outputCanvasRef);
     }
     imageObject.src = canvas.toDataURL();
 }
 
-
 function Preview(props) {
+    const previewRef = useRef();
     // Depend on size of preview card
-    const [width, height] = useElementSize(props.previewRef);
+    const [width, height] = useElementSize(previewRef);
 
     // Draw preview on canvas if necessary data is available
-    if (props.canvasRef && props.imageData && props.previewRef) {
-        var scalingFactor = (props.previewRef.current.getBoundingClientRect().width - 20) / props.imageData.width;
-        drawPreview(props.canvasRef, props.imageData, props.layerData.keyweight, props.layerData.visibility, scalingFactor);
+    if (props.canvasRef && props.imageData && previewRef) {
+        var scalingFactor = (previewRef.current.getBoundingClientRect().width - 20) / props.imageData.width;
+        drawRasterLayers(props.canvasRef, props.imageData, props.layerData.keyweight, props.layerData.visibility, scalingFactor);
     }
 
     return (
-        <div className="card" ref={props.previewRef}>
+        <div className="card" ref={previewRef}>
             <div className="card-header">
                 {"Preview"}
             </div>
