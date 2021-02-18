@@ -80,8 +80,9 @@ function drawRasterLayers(outputCanvasRef, imageData, keyweight, layerVis, scali
 
 function Preview(props) {
     const previewRef = useRef();
+
     // Depend on size of preview card
-    const [width, height] = useElementSize(previewRef);
+    useElementSize(previewRef);
 
     // Draw preview on canvas if necessary data is available
     if (props.canvasRef && props.imageData && previewRef) {
