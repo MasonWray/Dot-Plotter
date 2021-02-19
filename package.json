@@ -1,6 +1,6 @@
 {
   "name": "dot-plotter",
-  "version": "0.1.0",
+  "version": "v0.1.0",
   "private": false,
   "homepage": "https://masonwray.github.io/Dot-Plotter",
   "dependencies": {
