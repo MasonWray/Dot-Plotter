@@ -1,7 +1,12 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { ACTIONS } from '../redux/store';
 
 function Layers(props) {
+    const visibility = useSelector((state) => state.raster_visibility);
+    const dispatch = useDispatch();
 
+    console.log(visibility)
     return (
         <div className="card">
             <div className="card-header">
@@ -11,63 +16,23 @@ function Layers(props) {
             <ul className="list-group list-group-flush">
                 <Layer
                     name="Cyan"
-                    visible={props.layerData.visibility.cyan}
-                    onClick={() => {
-                        props.setLayerData({
-                            keyweight: props.layerData.keyweight,
-                            visibility: {
-                                cyan: !props.layerData.visibility.cyan,
-                                magenta: props.layerData.visibility.magenta,
-                                yellow: props.layerData.visibility.yellow,
-                                black: props.layerData.visibility.black
-                            }
-                        })
-                    }}
+                    visible={visibility.cyan}
+                    onClick={() => { dispatch({ type: ACTIONS.TOGGLE_RASTER_LAYER_CYAN }) }}
                 />
                 <Layer
                     name="Magenta"
-                    visible={props.layerData.visibility.magenta}
-                    onClick={() => {
-                        props.setLayerData({
-                            keyweight: props.layerData.keyweight,
-                            visibility: {
-                                cyan: props.layerData.visibility.cyan,
-                                magenta: !props.layerData.visibility.magenta,
-                                yellow: props.layerData.visibility.yellow,
-                                black: props.layerData.visibility.black
-                            }
-                        })
-                    }}
+                    visible={visibility.magenta}
+                    onClick={() => { dispatch({ type: ACTIONS.TOGGLE_RASTER_LAYER_MAGENTA }) }}
                 />
                 <Layer
                     name="Yellow"
-                    visible={props.layerData.visibility.yellow}
-                    onClick={() => {
-                        props.setLayerData({
-                            keyweight: props.layerData.keyweight,
-                            visibility: {
-                                cyan: props.layerData.visibility.cyan,
-                                magenta: props.layerData.visibility.magenta,
-                                yellow: !props.layerData.visibility.yellow,
-                                black: props.layerData.visibility.black
-                            }
-                        })
-                    }}
+                    visible={visibility.yellow}
+                    onClick={() => { dispatch({ type: ACTIONS.TOGGLE_RASTER_LAYER_YELLOW }) }}
                 />
                 <Layer
                     name="Black"
-                    visible={props.layerData.visibility.black}
-                    onClick={() => {
-                        props.setLayerData({
-                            keyweight: props.layerData.keyweight,
-                            visibility: {
-                                cyan: props.layerData.visibility.cyan,
-                                magenta: props.layerData.visibility.magenta,
-                                yellow: props.layerData.visibility.yellow,
-                                black: !props.layerData.visibility.black
-                            }
-                        })
-                    }}
+                    visible={visibility.black}
+                    onClick={() => { dispatch({ type: ACTIONS.TOGGLE_RASTER_LAYER_BLACK }) }}
                 />
             </ul>
             <div className="card-footer">

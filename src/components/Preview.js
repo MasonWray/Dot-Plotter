@@ -1,4 +1,5 @@
 import React, { useState, useLayoutEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 
 // Get current size of given element when it is resized
 function useElementSize(eRef) {
@@ -83,12 +84,13 @@ function Preview(props) {
     const previewRef = useRef();
     const canvasRef = useRef();
 
+    const raster_visibility = useSelector((state) => state.raster_visibility);
     // Depend on size of preview card
     useElementSize(previewRef);
 
     if (canvasRef && props.image && previewRef) {
         var scalingFactor = (previewRef.current.getBoundingClientRect().width - 20) / props.image.width;
-        drawRasterLayers(canvasRef, props.image, props.layerData.keyweight, props.layerData.visibility, scalingFactor);
+        drawRasterLayers(canvasRef, props.image, props.layerData.keyweight, raster_visibility, scalingFactor);
     }
 
     return (
