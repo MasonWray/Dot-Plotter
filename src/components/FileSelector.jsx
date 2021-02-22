@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 
 import ACTIONS from '../redux/actions';
 
-function FileSelector(props) {
+function FileSelector() {
     const dispatch = useDispatch();
 
     const handleFileChange = function (e) {
