@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
-function VectorOverlay(props) {
+import ACTIONS from '../redux/actions';
 
+function OutputSettings(props) {
+    const image = useSelector((state) => state.FileSelector.sourceImage);
+    const settings = useSelector((state) => state.OutputSettings);
+    const dispatch = useDispatch();
     return (
         <div className="card">
-            <div className="card-header">Vector Overlay</div>
+            <div className="card-header">Output Settings</div>
             <ul className="list-group list-group-flush">
                 <li className="list-group-item">
                     <div className="row mb-2">
@@ -15,13 +20,12 @@ function VectorOverlay(props) {
                             <input
                                 type="number"
                                 className="form-control"
-                                disabled={!props.image}
-                                value={props.vectorData.width}
+                                disabled={!image}
+                                value={settings.stockWidth}
                                 onChange={(e) => {
-                                    props.setVectorData({
-                                        width: e.target.value,
-                                        height: (props.image.height / props.image.width * e.target.value),
-                                        toolDiameter: props.vectorData.toolDiameter
+                                    dispatch({
+                                        type: ACTIONS.SET_OUTPUT_WIDTH,
+                                        payload: { value: e.target.value, width: image.width, height: image.height }
                                     })
                                 }}
                             />
@@ -35,13 +39,12 @@ function VectorOverlay(props) {
                             <input
                                 type="number"
                                 className="form-control"
-                                disabled={!props.image}
-                                value={props.vectorData.height}
+                                disabled={!image}
+                                value={settings.stockHeight}
                                 onChange={(e) => {
-                                    props.setVectorData({
-                                        width: (props.image.width / props.image.height * e.target.value),
-                                        height: e.target.value,
-                                        toolDiameter: props.vectorData.toolDiameter
+                                    dispatch({
+                                        type: ACTIONS.SET_OUTPUT_HEIGHT,
+                                        payload: { value: e.target.value, width: image.width, height: image.height }
                                     })
                                 }}
                             />
@@ -57,14 +60,8 @@ function VectorOverlay(props) {
                             <input
                                 type="number"
                                 className="form-control"
-                                value={props.vectorData.toolDiameter}
-                                onChange={(e) => {
-                                    props.setVectorData({
-                                        width: props.vectorData.width,
-                                        height: props.vectorData.height,
-                                        toolDiameter: (e.target.value < 0 ? 0 : e.target.value)
-                                    })
-                                }}
+                                value={settings.toolDiameter}
+                                onChange={(e) => { dispatch({ type: ACTIONS.SET_OUTPUT_TOOL_DIAMETER, payload: e.target.value }) }}
                             />
                         </div>
                     </div>
@@ -74,4 +71,4 @@ function VectorOverlay(props) {
     )
 }
 
-export default VectorOverlay;
+export default OutputSettings;

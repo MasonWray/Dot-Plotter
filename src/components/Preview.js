@@ -83,14 +83,15 @@ function drawRasterLayers(outputCanvasRef, image, keyweight, layerVis, scalingFa
 function Preview(props) {
     const previewRef = useRef();
     const canvasRef = useRef();
+    const layers = useSelector((state) => state.Layers);
+    const sourceImage = useSelector((state) => state.FileSelector.sourceImage);
 
-    const raster_visibility = useSelector((state) => state.raster_visibility);
     // Depend on size of preview card
     useElementSize(previewRef);
 
-    if (canvasRef && props.image && previewRef) {
-        var scalingFactor = (previewRef.current.getBoundingClientRect().width - 20) / props.image.width;
-        drawRasterLayers(canvasRef, props.image, props.layerData.keyweight, raster_visibility, scalingFactor);
+    if (canvasRef && sourceImage && previewRef) {
+        var scalingFactor = (previewRef.current.getBoundingClientRect().width - 20) / sourceImage.width;
+        drawRasterLayers(canvasRef, sourceImage, layers.keyweight, layers, scalingFactor);
     }
 
     return (

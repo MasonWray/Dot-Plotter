@@ -1,12 +1,11 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { ACTIONS } from '../redux/store';
+
+import ACTIONS from '../redux/actions';
 
 function Layers(props) {
-    const visibility = useSelector((state) => state.raster_visibility);
+    const layers = useSelector((state) => state.Layers);
     const dispatch = useDispatch();
-
-    console.log(visibility)
     return (
         <div className="card">
             <div className="card-header">
@@ -16,44 +15,34 @@ function Layers(props) {
             <ul className="list-group list-group-flush">
                 <Layer
                     name="Cyan"
-                    visible={visibility.cyan}
+                    visible={layers.cyan}
                     onClick={() => { dispatch({ type: ACTIONS.TOGGLE_RASTER_LAYER_CYAN }) }}
                 />
                 <Layer
                     name="Magenta"
-                    visible={visibility.magenta}
+                    visible={layers.magenta}
                     onClick={() => { dispatch({ type: ACTIONS.TOGGLE_RASTER_LAYER_MAGENTA }) }}
                 />
                 <Layer
                     name="Yellow"
-                    visible={visibility.yellow}
+                    visible={layers.yellow}
                     onClick={() => { dispatch({ type: ACTIONS.TOGGLE_RASTER_LAYER_YELLOW }) }}
                 />
                 <Layer
                     name="Black"
-                    visible={visibility.black}
+                    visible={layers.black}
                     onClick={() => { dispatch({ type: ACTIONS.TOGGLE_RASTER_LAYER_BLACK }) }}
                 />
             </ul>
             <div className="card-footer">
-                <label className="form-label">{`Key Weight: ${props.layerData.keyweight * 100}%`}</label>
+                <label className="form-label">{`Key Weight: ${layers.keyweight * 100}%`}</label>
                 <input
                     type="range"
                     className="form-range"
                     min="0"
                     max="1"
                     step="0.1"
-                    onChange={(e) => {
-                        props.setLayerData({
-                            keyweight: e.target.value,
-                            visibility: {
-                                cyan: props.layerData.visibility.cyan,
-                                magenta: props.layerData.visibility.magenta,
-                                yellow: props.layerData.visibility.yellow,
-                                black: props.layerData.visibility.black
-                            }
-                        })
-                    }}
+                    onChange={(e) => { dispatch({ type: ACTIONS.SET_KEYWEIGHT, payload: e.target.value }) }}
                 />
             </div>
         </div>

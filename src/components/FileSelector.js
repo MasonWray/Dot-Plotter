@@ -1,6 +1,11 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
+
+import ACTIONS from '../redux/actions';
 
 function FileSelector(props) {
+    const dispatch = useDispatch();
+
     const handleFileChange = function (e) {
         if (e.target.files[0]) {
             var fr = new FileReader();
@@ -8,7 +13,7 @@ function FileSelector(props) {
             fr.onload = () => {
                 img.src = fr.result;
                 img.onload = () => {
-                    props.setImage(img)
+                    dispatch({ type: ACTIONS.SET_SOURCE_IMAGE, payload: img })
                 }
             }
             fr.readAsDataURL(e.target.files[0])

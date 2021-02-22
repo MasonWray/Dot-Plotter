@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import { Provider } from 'react-redux';
-import { createReduxStore } from './redux/store';
+import store from './redux/store';
 
 import App from './components/App';
 
@@ -12,7 +12,7 @@ import './styles.css';
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={createReduxStore()}>
+    <Provider store={store}>
       <App />
     </Provider>
   </React.StrictMode>,
