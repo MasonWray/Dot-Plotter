@@ -1,7 +1,8 @@
 import React, { useRef } from 'react';
 import { useSelector } from 'react-redux';
 
-import drawRasterLayers from '../util/drawRasterLayers';
+// import drawRasterLayers from '../util/drawRasterLayers';
+import drawRasterLayers from '../util/cmykSplitTest';
 import useElementSize from '../util/useElementSize';
 
 function Preview() {
