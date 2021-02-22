@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect } from 'react';
+import { useState, useLayoutEffect } from 'react';
 
 // Get current size of given element when it is resized
 function useElementSize(eRef) {
