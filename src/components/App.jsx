@@ -3,6 +3,8 @@ import Layers from './Layers';
 import Preview from './Preview';
 import OutputSettings from './OutputSettings';
 
+import LayerRenderer from './LayerRenderer';
+
 import pkg from '../../package.json';
 
 function App() {
@@ -38,6 +40,7 @@ function App() {
                     </div>
                 </div>
             </div>
+            <LayerRenderer />
         </div>
     );
 }

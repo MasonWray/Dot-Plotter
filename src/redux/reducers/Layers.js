@@ -1,49 +1,74 @@
 import ACTIONS from '../actions';
+import convert from '../../util/RGBtoCMYK';
 
-const initialState = {
-    cyan: true,
-    magenta: true,
-    yellow: true,
-    black: true,
-
-    keyweight: 1
-}
+const initialState = [
+    {
+        name: "Cyan",
+        color: { r: 0, g: 255, b: 255 },
+        mapper: ((r, g, b) => { return convert(r, g, b).C }),
+        visible: true,
+        raster: undefined,
+        raster_progress: 0,
+        vecor: undefined,
+        vector_progress: 0
+    },
+    {
+        name: "Magenta",
+        color: { r: 255, g: 0, b: 255 },
+        mapper: ((r, g, b) => { return convert(r, g, b).M }),
+        visible: true,
+        raster: undefined,
+        raster_progress: 0,
+        vecor: undefined,
+        vector_progress: 0
+    },
+    {
+        name: "Yellow",
+        color: { r: 255, g: 255, b: 0 },
+        mapper: ((r, g, b) => { return convert(r, g, b).Y }),
+        visible: true,
+        raster: undefined,
+        raster_progress: 0,
+        vecor: undefined,
+        vector_progress: 0
+    },
+    {
+        name: "Black",
+        color: { r: 0, g: 0, b: 0 },
+        mapper: ((r, g, b) => { return convert(r, g, b).K }),
+        visible: true,
+        raster: undefined,
+        raster_progress: 0,
+        vecor: undefined,
+        vector_progress: 0
+    }
+];
 
 const Layers = function (state = initialState, action) {
     switch (action.type) {
-        case ACTIONS.TOGGLE_RASTER_LAYER_CYAN: {
-            return {
-                ...state,
-                cyan: !state.cyan,
-            }
+        case ACTIONS.TOGGLE_LAYER_VISIBILITY: {
+            return state.map((layer, index) => {
+                if (index !== action.payload.id) {
+                    return layer
+                }
+                return {
+                    ...layer,
+                    visible: !layer.visible
+                }
+            })
         }
 
-        case ACTIONS.TOGGLE_RASTER_LAYER_MAGENTA: {
-            return {
-                ...state,
-                magenta: !state.magenta,
-            }
-        }
+        case ACTIONS.SET_LAYER_RASTER: {
+            return state.map((layer, index) => {
 
-        case ACTIONS.TOGGLE_RASTER_LAYER_YELLOW: {
-            return {
-                ...state,
-                yellow: !state.yellow,
-            }
-        }
-
-        case ACTIONS.TOGGLE_RASTER_LAYER_BLACK: {
-            return {
-                ...state,
-                black: !state.black,
-            }
-        }
-
-        case ACTIONS.SET_KEYWEIGHT: {
-            return {
-                ...state,
-                keyweight: action.payload
-            }
+                if (index !== action.payload.id) {
+                    return layer
+                }
+                return {
+                    ...layer,
+                    raster: action.payload.raster
+                }
+            })
         }
 
         default: {

@@ -1,23 +1,33 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-// import drawRasterLayers from '../util/drawRasterLayers';
-import drawRasterLayers from '../util/cmykSplitTest';
 import useElementSize from '../util/useElementSize';
 
 function Preview() {
     const previewRef = useRef();
     const canvasRef = useRef();
+
     const layers = useSelector((state) => state.Layers);
     const sourceImage = useSelector((state) => state.FileSelector.sourceImage);
 
     // Depend on size of preview card
     useElementSize(previewRef);
 
-    if (canvasRef && sourceImage && previewRef) {
-        var scalingFactor = (previewRef.current.getBoundingClientRect().width - 20) / sourceImage.width;
-        drawRasterLayers(canvasRef, sourceImage, layers.keyweight, layers, scalingFactor);
-    }
+    useEffect(() => {
+        var canvas = canvasRef.current;
+        var context = canvas.getContext("2d");
+        if (sourceImage) {
+            var scalingFactor = (previewRef.current.getBoundingClientRect().width - 20) / sourceImage.width;
+            canvas.height = sourceImage.height * scalingFactor;
+            canvas.width = sourceImage.width * scalingFactor;
+            context.scale(scalingFactor, scalingFactor)
+            layers.forEach((layer) => {
+                if (layer.raster && layer.visible) {
+                    context.drawImage(layer.raster, 0, 0);
+                }
+            })
+        }
+    })
 
     return (
         <div className="card" ref={previewRef}>
@@ -25,7 +35,7 @@ function Preview() {
                 {"Preview"}
             </div>
             <div className="card-body d-flex justify-content-center">
-                <canvas ref={canvasRef}></canvas>
+                <canvas ref={canvasRef} ></canvas>
             </div>
         </div >
     )
