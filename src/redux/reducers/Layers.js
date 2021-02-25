@@ -8,9 +8,7 @@ const initialState = [
         mapper: ((r, g, b) => { return convert(r, g, b).C }),
         visible: true,
         raster: undefined,
-        raster_progress: 0,
         vecor: undefined,
-        vector_progress: 0
     },
     {
         name: "Magenta",
@@ -18,9 +16,7 @@ const initialState = [
         mapper: ((r, g, b) => { return convert(r, g, b).M }),
         visible: true,
         raster: undefined,
-        raster_progress: 0,
         vecor: undefined,
-        vector_progress: 0
     },
     {
         name: "Yellow",
@@ -28,9 +24,7 @@ const initialState = [
         mapper: ((r, g, b) => { return convert(r, g, b).Y }),
         visible: true,
         raster: undefined,
-        raster_progress: 0,
         vecor: undefined,
-        vector_progress: 0
     },
     {
         name: "Black",
@@ -38,9 +32,7 @@ const initialState = [
         mapper: ((r, g, b) => { return convert(r, g, b).K }),
         visible: true,
         raster: undefined,
-        raster_progress: 0,
         vecor: undefined,
-        vector_progress: 0
     }
 ];
 
@@ -60,7 +52,6 @@ const Layers = function (state = initialState, action) {
 
         case ACTIONS.SET_LAYER_RASTER: {
             return state.map((layer, index) => {
-
                 if (index !== action.payload.id) {
                     return layer
                 }

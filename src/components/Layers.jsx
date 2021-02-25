@@ -6,7 +6,11 @@ import ACTIONS from '../redux/actions';
 function Layers(props) {
     const dispatch = useDispatch();
     const layers = useSelector((state) => state.Layers.map((layer, index) => {
-        return { name: layer.name, visible: layer.visible, index: index }
+        return {
+            name: layer.name,
+            visible: layer.visible,
+            index: index
+        }
     }))
     return (
         <div className="card">
@@ -22,6 +26,7 @@ function Layers(props) {
                             index={layer.index}
                             name={layer.name}
                             visible={layer.visible}
+                            raster_progress={layer.raster_progress}
                             visToggle={() => { dispatch({ type: ACTIONS.TOGGLE_LAYER_VISIBILITY, payload: { id: layer.index } }) }}
                         />
                     )
@@ -34,7 +39,6 @@ function Layers(props) {
 function Layer(props) {
     return (
         <li className="list-group-item">
-            <canvas hidden={true} />
             <div className="row">
                 <div className="col">
                     <label>{props.name}</label>
