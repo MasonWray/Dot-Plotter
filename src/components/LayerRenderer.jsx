@@ -36,7 +36,18 @@ function Layer(props) {
         renderRasterLayer(layer, ref, dispatch)
     }, [props.source, props.name, props.id, props.color, props.mapper, dispatch])
 
+    useEffect(() => {
+        const layer = {
+
+        }
+        renderVectorLayer(layer, ref, dispatch);
+    })
+
     return (<canvas ref={ref} hidden={true} />);
+}
+
+function renderVectorLayer() {
+
 }
 
 function renderRasterLayer(layer, ref, dispatch) {

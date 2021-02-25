@@ -8,7 +8,8 @@ function Layers(props) {
     const layers = useSelector((state) => state.Layers.map((layer, index) => {
         return {
             name: layer.name,
-            visible: layer.visible,
+            raster_visible: layer.raster_visible,
+            vector_visible: layer.vector_visible,
             index: index
         }
     }))
@@ -25,9 +26,10 @@ function Layers(props) {
                             key={layer.index}
                             index={layer.index}
                             name={layer.name}
-                            visible={layer.visible}
-                            raster_progress={layer.raster_progress}
-                            visToggle={() => { dispatch({ type: ACTIONS.TOGGLE_LAYER_VISIBILITY, payload: { id: layer.index } }) }}
+                            raster_visible={layer.raster_visible}
+                            vector_visible={layer.vector_visible}
+                            rasterToggle={() => { dispatch({ type: ACTIONS.TOGGLE_RASTER_VISIBILITY, payload: { id: layer.index } }) }}
+                            vectorToggle={() => { dispatch({ type: ACTIONS.TOGGLE_VECTOR_VISIBILITY, payload: { id: layer.index } }) }}
                         />
                     )
                 })}
@@ -44,8 +46,13 @@ function Layer(props) {
                     <label>{props.name}</label>
                 </div>
                 <div className="col">
-                    <span onClick={props.visToggle}>
-                        {visIcon(props.visible)}
+                    <span onClick={props.rasterToggle}>
+                        {visIcon(props.raster_visible)}
+                    </span>
+                </div>
+                <div className="col">
+                    <span onClick={props.vectorToggle}>
+                        {visIcon(props.vector_visible)}
                     </span>
                 </div>
             </div>

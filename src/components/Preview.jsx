@@ -22,7 +22,7 @@ function Preview() {
             canvas.width = sourceImage.width * scalingFactor;
             context.scale(scalingFactor, scalingFactor)
             layers.forEach((layer) => {
-                if (layer.raster && layer.visible) {
+                if (layer.raster && layer.raster_visible) {
                     context.drawImage(layer.raster, 0, 0);
                 }
             })
