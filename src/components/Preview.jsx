@@ -14,7 +14,6 @@ function Preview() {
     useElementSize(previewRef);
 
     useEffect(() => {
-        console.log("Rendering Preview")
         var canvas = canvasRef.current;
         var context = canvas.getContext("2d");
         if (sourceImage) {

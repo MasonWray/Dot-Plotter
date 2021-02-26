@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import ACTIONS from '../redux/actions';
@@ -6,12 +6,8 @@ import ACTIONS from '../redux/actions';
 function Layers(props) {
     const dispatch = useDispatch();
     const layers = useSelector((state) => state.Layers.map((layer, index) => {
-        return {
-            name: layer.name,
-            raster_visible: layer.raster_visible,
-            vector_visible: layer.vector_visible,
-            index: index
-        }
+        layer.index = index;
+        return layer;
     }))
     return (
         <div className="card">
@@ -24,10 +20,7 @@ function Layers(props) {
                     return (
                         <Layer
                             key={layer.index}
-                            index={layer.index}
-                            name={layer.name}
-                            raster_visible={layer.raster_visible}
-                            vector_visible={layer.vector_visible}
+                            layer={layer}
                             rasterToggle={() => { dispatch({ type: ACTIONS.TOGGLE_RASTER_VISIBILITY, payload: { id: layer.index } }) }}
                             vectorToggle={() => { dispatch({ type: ACTIONS.TOGGLE_VECTOR_VISIBILITY, payload: { id: layer.index } }) }}
                         />
@@ -43,16 +36,16 @@ function Layer(props) {
         <li className="list-group-item">
             <div className="row">
                 <div className="col">
-                    <label>{props.name}</label>
+                    <label>{props.layer.name}</label>
                 </div>
                 <div className="col">
                     <span onClick={props.rasterToggle}>
-                        {visIcon(props.raster_visible)}
+                        {visIcon(props.layer.raster_visible)}
                     </span>
                 </div>
                 <div className="col">
                     <span onClick={props.vectorToggle}>
-                        {visIcon(props.vector_visible)}
+                        {visIcon(props.layer.vector_visible)}
                     </span>
                 </div>
             </div>
