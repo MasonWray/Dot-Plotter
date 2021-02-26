@@ -14,6 +14,7 @@ function Preview() {
     useElementSize(previewRef);
 
     useEffect(() => {
+        console.log("Rendering Preview")
         var canvas = canvasRef.current;
         var context = canvas.getContext("2d");
         if (sourceImage) {
@@ -22,8 +23,14 @@ function Preview() {
             canvas.width = sourceImage.width * scalingFactor;
             context.scale(scalingFactor, scalingFactor)
             layers.forEach((layer) => {
+                // Draw raster layer
                 if (layer.raster && layer.raster_visible) {
                     context.drawImage(layer.raster, 0, 0);
+                }
+
+                // Draw vector layer from preview image
+                if (layer.vector && layer.vector_visible) {
+                    context.drawImage(layer.vector, 0, 0);
                 }
             })
         }

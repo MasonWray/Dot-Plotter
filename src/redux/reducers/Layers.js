@@ -8,8 +8,9 @@ const initialState = [
         mapper: ((r, g, b) => { return convert(r, g, b).C }),
         raster_visible: true,
         raster: undefined,
-        vector_visible: true,
-        vecor: undefined,
+        vector_visible: false,
+        vector: undefined,
+        vector_data: undefined
     },
     {
         name: "Magenta",
@@ -17,8 +18,9 @@ const initialState = [
         mapper: ((r, g, b) => { return convert(r, g, b).M }),
         raster_visible: true,
         raster: undefined,
-        vector_visible: true,
-        vecor: undefined,
+        vector_visible: false,
+        vector: undefined,
+        vector_data: undefined
     },
     {
         name: "Yellow",
@@ -26,8 +28,9 @@ const initialState = [
         mapper: ((r, g, b) => { return convert(r, g, b).Y }),
         raster_visible: true,
         raster: undefined,
-        vector_visible: true,
-        vecor: undefined,
+        vector_visible: false,
+        vector: undefined,
+        vector_data: undefined
     },
     {
         name: "Black",
@@ -35,8 +38,9 @@ const initialState = [
         mapper: ((r, g, b) => { return convert(r, g, b).K }),
         raster_visible: true,
         raster: undefined,
-        vector_visible: true,
-        vecor: undefined,
+        vector_visible: false,
+        vector: undefined,
+        vector_data: undefined
     }
 ];
 
@@ -74,6 +78,30 @@ const Layers = function (state = initialState, action) {
                 return {
                     ...layer,
                     raster: action.payload.raster
+                }
+            })
+        }
+
+        case ACTIONS.SET_LAYER_VECTOR: {
+            return state.map((layer, index) => {
+                if (index !== action.payload.id) {
+                    return layer
+                }
+                return {
+                    ...layer,
+                    vector: action.payload.vector
+                }
+            })
+        }
+
+        case ACTIONS.SET_VECTOR_DATA: {
+            return state.map((layer, index) => {
+                if (index !== action.payload.id) {
+                    return layer
+                }
+                return {
+                    ...layer,
+                    vector_data: action.payload.vector_data
                 }
             })
         }
