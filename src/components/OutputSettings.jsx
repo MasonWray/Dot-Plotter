@@ -1,12 +1,30 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import ACTIONS from '../redux/actions';
 
 function OutputSettings(props) {
-    const image = useSelector((state) => state.FileSelector.sourceImage);
     const settings = useSelector((state) => state.OutputSettings);
+    const download = useRef();
+    const pkg = useSelector((state) => state.Output.package)
     const dispatch = useDispatch();
+
+    function handleDownload() {
+        download.current.click();
+    }
+
+    function handleWidthChange(e) {
+        var newWidth = Math.round(e.target.value < 1 ? 1 : e.target.value * 1);
+        var newHeight = Math.round(newWidth * settings.sourceHeight / settings.sourceWidth);
+        dispatch({ type: ACTIONS.SET_OUTPUT_SIZE, payload: { width: newWidth, height: newHeight } })
+    }
+
+    function handleHeightChange(e) {
+        var newHeight = Math.round(e.target.value < 1 ? 1 : e.target.value * 1);
+        var newWidth = Math.round(newHeight * settings.sourceWidth / settings.sourceHeight);
+        dispatch({ type: ACTIONS.SET_OUTPUT_SIZE, payload: { width: newWidth, height: newHeight } })
+    }
+
     return (
         <div className="card">
             <div className="card-header">Output Settings</div>
@@ -20,14 +38,9 @@ function OutputSettings(props) {
                             <input
                                 type="number"
                                 className="form-control"
-                                disabled={!image}
+                                disabled={!(settings.sourceWidth > 0)}
                                 value={settings.stockWidth}
-                                onChange={(e) => {
-                                    dispatch({
-                                        type: ACTIONS.SET_OUTPUT_WIDTH,
-                                        payload: { value: e.target.value, width: image.width, height: image.height }
-                                    })
-                                }}
+                                onChange={(e) => { handleWidthChange(e) }}
                             />
                         </div>
                     </div>
@@ -39,14 +52,9 @@ function OutputSettings(props) {
                             <input
                                 type="number"
                                 className="form-control"
-                                disabled={!image}
+                                disabled={!(settings.sourceHeight > 0)}
                                 value={settings.stockHeight}
-                                onChange={(e) => {
-                                    dispatch({
-                                        type: ACTIONS.SET_OUTPUT_HEIGHT,
-                                        payload: { value: e.target.value, width: image.width, height: image.height }
-                                    })
-                                }}
+                                onChange={(e) => { handleHeightChange(e) }}
                             />
                         </div>
                     </div>
@@ -60,9 +68,95 @@ function OutputSettings(props) {
                             <input
                                 type="number"
                                 className="form-control"
+                                step="0.1"
                                 value={settings.toolDiameter}
-                                onChange={(e) => { dispatch({ type: ACTIONS.SET_OUTPUT_TOOL_DIAMETER, payload: e.target.value }) }}
+                                onChange={(e) => { dispatch({ type: ACTIONS.SET_OUTPUT_TOOL_DIAMETER, payload: e.target.value * 1 }) }}
                             />
+                        </div>
+                    </div>
+                </li>
+                <li className="list-group-item">
+                    <div className="row mb-2">
+                        <div className="col">
+                            <label className="form-label">Travel Feedrate (mm/s)</label>
+                        </div>
+                        <div className="col">
+                            <input
+                                type="number"
+                                className="form-control"
+                                step="50"
+                                value={settings.feedrateTravel}
+                                onChange={(e) => { dispatch({ type: ACTIONS.SET_FEEDRATE_TRAVEL, payload: e.target.value * 1 }) }}
+                            />
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col">
+                            <label className="form-label">Plunge Feedrate (mm/s)</label>
+                        </div>
+                        <div className="col">
+                            <input
+                                type="number"
+                                className="form-control"
+                                step="50"
+                                value={settings.feedratePlunge}
+                                onChange={(e) => { dispatch({ type: ACTIONS.SET_FEEDRATE_PLUNGE, payload: e.target.value * 1 }) }}
+                            />
+                        </div>
+                    </div>
+                </li>
+                <li className="list-group-item">
+                    <div className="row mb-2">
+                        <div className="col">
+                            <label className="form-label">Travel Height (mm)</label>
+                        </div>
+                        <div className="col">
+                            <input
+                                type="number"
+                                className="form-control"
+                                step="0.1"
+                                value={settings.heightTravel}
+                                onChange={(e) => dispatch({ type: ACTIONS.SET_HEIGHT_TRAVEL, payload: e.target.value * 1 })}
+                            />
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col">
+                            <label className="form-label">Plunge Height (mm)</label>
+                        </div>
+                        <div className="col">
+                            <input
+                                type="number"
+                                className="form-control"
+                                step="0.1"
+                                value={settings.heightPlunge}
+                                onChange={(e) => dispatch({ type: ACTIONS.SET_HEIGHT_PLUNGE, payload: e.target.value * 1 })}
+                            />
+                        </div>
+                    </div>
+                </li>
+                <li className="list-group-item">
+                    <div className="row">
+                        {/* <div className="col mx-4">
+                            <button className="btn btn-primary w-100">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-arrow-repeat" viewBox="0 0 16 16">
+                                    <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z" />
+                                    <path fillRule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z" />
+                                </svg>
+                            </button>
+                        </div> */}
+                        <div className="col mx-4">
+                            <a
+                                hidden={true}
+                                download={"output.zip"}
+                                ref={download}
+                                href={pkg}
+                            >Download GCODE</a>
+                            <button className="btn btn-primary w-100" disabled={!pkg} onClick={handleDownload}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-arrow-bar-down" viewBox="0 0 16 16">
+                                    <path fillRule="evenodd" d="M1 3.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1-.5-.5zM8 6a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 .708-.708L7.5 12.293V6.5A.5.5 0 0 1 8 6z" />
+                                </svg>
+                            </button>
                         </div>
                     </div>
                 </li>

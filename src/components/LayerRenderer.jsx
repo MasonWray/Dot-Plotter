@@ -1,11 +1,34 @@
 import React, { useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import JSZip from 'jszip';
+
 import ACTIONS from '../redux/actions';
-import sleep from '../util/sleep';
+async function pack(layers, dispatch) {
+    // Determine if all gcode has been generated
+    var ready = true;
+    for (var i = 0; i < layers.length; i++) {
+        if (!layers[i].gcode) { ready = false }
+    }
+    if (ready) {
+        // Create ZIP container and add files
+        var zip = new JSZip();
+        layers.forEach((layer) => { zip.file(`${layer.name}.gcode`, layer.gcode) })
+
+        // Create a BLOB from the container and send to output state
+        var pkg = await zip.generateAsync({ type: "blob" })
+        const fileDownloadUrl = URL.createObjectURL(pkg);
+        dispatch({ type: ACTIONS.SET_DOWNLOAD_PACKAGE, payload: fileDownloadUrl })
+    }
+}
 
 function LayerRenderer() {
     const layers = useSelector((state) => state.Layers)
     const source = useSelector((state) => state.FileSelector.sourceImage);
+    const dispatch = useDispatch();
+
+    // Package gcode into ZIP
+    useEffect(() => { pack(layers, dispatch) })
+
     return (
         layers.map((layer, index) => {
             return (
@@ -27,6 +50,7 @@ function Layer(props) {
     const rasterLayerRef = useRef();
     const vectorPreviewRef = useRef();
     const dispatch = useDispatch();
+    const settings = useSelector((state) => state.OutputSettings);
 
     useEffect(() => {
         const layer = {
@@ -41,14 +65,14 @@ function Layer(props) {
 
     useEffect(() => {
         const layer = {
-            // source: props.source,
             raster: props.raster,
             name: props.name,
             color: { r: props.color.r, g: props.color.g, b: props.color.b },
-            id: props.id
+            id: props.id,
+            settings: settings
         }
         renderVectorLayer(layer, vectorPreviewRef, dispatch);
-    }, [props.raster, props.name, props.id, props.color, dispatch])
+    }, [props.raster, props.name, props.id, props.color, settings, dispatch])
 
     return (<span><canvas ref={rasterLayerRef} hidden={true} /><canvas ref={vectorPreviewRef} hidden={true} /></span>);
 }
@@ -58,58 +82,44 @@ async function renderVectorLayer(layer, ref, dispatch) {
         // Draw raster layer to canvas
         var canvas = ref.current;
         var context = canvas.getContext("2d");
-        canvas.height = layer.raster.height;
-        canvas.width = layer.raster.width;
+        canvas.width = Math.round(layer.settings.stockWidth / layer.settings.toolDiameter);
+        canvas.height = Math.round(layer.settings.stockHeight / layer.settings.toolDiameter);
+        context.scale(canvas.width / layer.settings.sourceWidth, canvas.height / layer.settings.sourceHeight)
         context.drawImage(layer.raster, 0, 0);
 
         // Generate vector point data
-        var imgd = context.getImageData(0, 0, layer.raster.width, layer.raster.height);
+        var imgd = context.getImageData(0, 0, canvas.width, canvas.height);
         var pix = imgd.data;
         var vector_data = {
             color: { r: layer.color.r, g: layer.color.g, b: layer.color.b },
             diameter: 0.4,
             points: []
         }
-        var lastDataProg;
+
         for (var i = 0, n = pix.length; i < n; i += 4) {
             var x = (i / 4) % canvas.width;
             var y = Math.floor((i / 4) / canvas.width);
 
-            var point = {
-                x: x,
-                y: y
-            }
-
             if (pix[i + 3] > Math.floor(Math.random() * Math.floor(255))) {
-                vector_data.points.push(point)
-            }
-            var dataProgNow = Math.round(i / pix.length * 10) * 10;
-            if (lastDataProg !== dataProgNow) {
-                lastDataProg = dataProgNow;
-                dispatch({ type: ACTIONS.UPDATE_DATA_PROGRESS, payload: { id: layer.id, progress: dataProgNow } })
-                await sleep(1)
+                vector_data.points.push({
+                    x: x * layer.settings.toolDiameter,
+                    y: y * layer.settings.toolDiameter
+                })
             }
         }
         dispatch({ type: ACTIONS.SET_LAYER_DATA, payload: { id: layer.id, vector_data: vector_data } })
 
         // Generate vector preview image
-        canvas.height = layer.raster.height;
-        canvas.width = layer.raster.width;
+        canvas.width = layer.settings.stockWidth;
+        canvas.height = layer.settings.stockHeight;
         var angle = Math.PI * 2;
-        context.fillStyle = `rgb(${vector_data.color.r}, ${vector_data.color.g}, ${vector_data.color.b})`;
-        var lastVectorProg;
+        context.fillStyle = `rgba(${vector_data.color.r}, ${vector_data.color.g}, ${vector_data.color.b}, 64)`;
         for (var p = 0; p < vector_data.points.length; p++) {
-            var vpoint = vector_data.points[p];
+            var point = vector_data.points[p];
             context.beginPath();
-            context.arc(vpoint.x, vpoint.y, 0.4, 0, angle)
+            context.arc(point.x, point.y, layer.settings.toolDiameter, 0, angle)
             context.fill();
             context.closePath();
-            var vectorProgNow = Math.round(i / pix.length * 10) * 10;
-            if (lastVectorProg !== vectorProgNow) {
-                lastVectorProg = vectorProgNow;
-                dispatch({ type: ACTIONS.UPDATE_VECTOR_PROGRESS, payload: { id: layer.id, progress: vectorProgNow } })
-                await sleep(1)
-            }
         }
         var image = new Image();
         image.onload = () => {
@@ -117,6 +127,17 @@ async function renderVectorLayer(layer, ref, dispatch) {
             dispatch({ type: ACTIONS.SET_LAYER_VECTOR, payload: { id: layer.id, vector: image } })
         }
         image.src = canvas.toDataURL();
+
+        //Generate GCODE
+        var gcode = `G28\nG0 X0 Y0 Z${layer.settings.heightTravel} F${layer.settings.feedrateTravel}\n`;
+        var down = `G1 Z${layer.settings.heightPlunge} F${layer.settings.feedratePlunge}\n`;
+        var up = `G0 Z${layer.settings.heightTravel} F${layer.settings.feedrateTravel}\n`;
+        for (var g = 0; g < vector_data.points.length; g++) {
+            var gpoint = vector_data.points[g];
+            var move = `G0 X${Math.round(gpoint.x * 1000) / 1000} Y${Math.round((layer.settings.stockHeight - gpoint.y) * 1000) / 1000} F${layer.settings.feedrateTravel}\n`;
+            gcode = gcode + move + down + up;
+        }
+        dispatch({ type: ACTIONS.SET_LAYER_GCODE, payload: { id: layer.id, gcode: gcode } })
     }
 }
 
@@ -135,18 +156,11 @@ async function renderRasterLayer(layer, ref, dispatch) {
         var pix = imgd.data;
 
         // Update pixels with mapper function
-        var lastRasterProg;
         for (var i = 0, n = pix.length; i < n; i += 4) {
             pix[i + 0] = layer.color.r; // red
             pix[i + 1] = layer.color.g; // green
             pix[i + 2] = layer.color.b; // blue
             pix[i + 3] = 255 * layer.mapper(src[i + 0], src[i + 1], src[i + 2]); // alpha
-            var rasterProgNow = Math.round(i / pix.length * 10) * 10;
-            if (lastRasterProg !== rasterProgNow) {
-                lastRasterProg = rasterProgNow;
-                dispatch({ type: ACTIONS.UPDATE_RASTER_PROGRESS, payload: { id: layer.id, progress: rasterProgNow } })
-                await sleep(1)
-            }
         }
         context.putImageData(imgd, 0, 0);
 

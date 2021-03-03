@@ -14,6 +14,7 @@ function FileSelector() {
                 img.src = fr.result;
                 img.onload = () => {
                     dispatch({ type: ACTIONS.SET_SOURCE_IMAGE, payload: img })
+                    dispatch({ type: ACTIONS.SET_SOURCE_SIZE, payload: { width: img.width, height: img.height } })
                 }
             }
             fr.readAsDataURL(e.target.files[0])
