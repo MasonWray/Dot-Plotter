@@ -2,6 +2,9 @@ import ACTIONS from '../redux/actions';
 
 /* eslint-disable import/no-webpack-loader-syntax */
 // import VectorWorker from 'worker-loader!../workers/VectorWorker';
+// const worker = new PointsWorker()
+// worker.onmessage = (e) => { console.log(e.data) }
+// worker.postMessage({ pix: pix, width: canvas.width, diameter: layer.settings.toolDiameter })
 
 async function renderVectorLayer(layer, ref, dispatch) {
     if (layer.raster) {
@@ -13,45 +16,34 @@ async function renderVectorLayer(layer, ref, dispatch) {
         context.scale(canvas.width / layer.settings.sourceWidth, canvas.height / layer.settings.sourceHeight)
         context.drawImage(layer.raster, 0, 0);
 
-        // Generate vector point data
+        // Get pixel data
         var imgd = context.getImageData(0, 0, canvas.width, canvas.height);
         var pix = imgd.data;
-        var vector_data = {
-            color: { r: layer.color.r, g: layer.color.g, b: layer.color.b },
-            diameter: 0.4,
-            points: []
-        }
 
-        // console.log('spawning worker from renderer')
-        // const worker = new PointsWorker()
-        // worker.onmessage = (e) => { console.log(e.data) }
-        // worker.postMessage({ pix: pix, width: canvas.width, diameter: layer.settings.toolDiameter })
-
-        for (var i = 0, n = pix.length; i < n; i += 4) {
-            var x = (i / 4) % canvas.width;
-            var y = Math.floor((i / 4) / canvas.width);
-
-            if (pix[i + 3] > Math.floor(Math.random() * Math.floor(255))) {
-                vector_data.points.push({
-                    x: Math.round((x * layer.settings.toolDiameter) * 10000) / 10000,
-                    y: Math.round((y * layer.settings.toolDiameter) * 10000) / 10000
-                })
-            }
-        }
-
-        // Generate vector preview without canvas
+        // Generate string headers
         var svgPoints = "";
-
         var gcode = `G28\nG0 X0 Y0 Z${layer.settings.heightTravel} F${layer.settings.feedrateTravel}\n`;
         var down = `G1 Z${layer.settings.heightPlunge} F${layer.settings.feedratePlunge}\n`;
         var up = `G0 Z${layer.settings.heightTravel} F${layer.settings.feedrateTravel}\n`;
 
-        for (var p = 0; p < vector_data.points.length; p++) {
-            var point = vector_data.points[p];
-            svgPoints = svgPoints + `<circle cx="${point.x}" cy="${point.y}" r="${layer.settings.toolDiameter}" fill="rgba(${vector_data.color.r}, ${vector_data.color.g}, ${vector_data.color.b}, 64)" />`;
-            var move = `G0 X${point.x} Y${layer.settings.stockHeight - point.y} F${layer.settings.feedrateTravel}\n`;
-            gcode = gcode + move + down + up;
+        for (var i = 0, n = pix.length; i < n; i += 4) {
+            if (pix[i + 3] > Math.floor(Math.random() * Math.floor(255))) {
+
+                // Get x,y coordinates of pixel in paper space
+                var x = (i / 4) % canvas.width;
+                var y = Math.floor((i / 4) / canvas.width);
+                x = Math.round((x * layer.settings.toolDiameter) * 10000) / 10000;
+                y = Math.round((y * layer.settings.toolDiameter) * 10000) / 10000;
+
+                // Draw dot on SVG preview
+                svgPoints = svgPoints + `<circle cx="${x}" cy="${y}" r="${layer.settings.toolDiameter}" fill="rgba(${layer.color.r}, ${layer.color.g}, ${layer.color.b}, 64)" />`;
+
+                // Add move to GCODE
+                var move = `G0 X${x} Y${layer.settings.stockHeight - y} F${layer.settings.feedrateTravel}\n`;
+                gcode = gcode + move + down + up;
+            }
         }
+
         dispatch({ type: ACTIONS.SET_LAYER_GCODE, payload: { id: layer.id, gcode: gcode } })
 
         var svg = `<svg width="${layer.settings.stockWidth}" height="${layer.settings.stockHeight}" version="1.1" xmlns="http://www.w3.org/2000/svg">${svgPoints}</svg>`
