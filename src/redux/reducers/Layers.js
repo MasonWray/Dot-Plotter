@@ -8,11 +8,9 @@ const initialState = [
         mapper: ((r, g, b) => { return convert(r, g, b).C }),
         raster_visible: true,
         raster: undefined,
-        raster_ref: undefined,
         vector_visible: false,
         vector: undefined,
         vector_ref: undefined,
-        gcode: undefined
     },
     {
         name: "Magenta",
@@ -20,11 +18,9 @@ const initialState = [
         mapper: ((r, g, b) => { return convert(r, g, b).M }),
         raster_visible: true,
         raster: undefined,
-        raster_ref: undefined,
         vector_visible: false,
         vector: undefined,
         vector_ref: undefined,
-        gcode: undefined
     },
     {
         name: "Yellow",
@@ -32,11 +28,9 @@ const initialState = [
         mapper: ((r, g, b) => { return convert(r, g, b).Y }),
         raster_visible: true,
         raster: undefined,
-        raster_ref: undefined,
         vector_visible: false,
         vector: undefined,
         vector_ref: undefined,
-        gcode: undefined
     },
     {
         name: "Black",
@@ -44,11 +38,9 @@ const initialState = [
         mapper: ((r, g, b) => { return convert(r, g, b).K }),
         raster_visible: true,
         raster: undefined,
-        raster_ref: undefined,
         vector_visible: false,
         vector: undefined,
         vector_ref: undefined,
-        gcode: undefined
     }
 ];
 
@@ -74,18 +66,6 @@ const Layers = function (state = initialState, action) {
                 return {
                     ...layer,
                     raster: action.payload.raster,
-                }
-            })
-        }
-
-        case ACTIONS.SET_RASTER_REF: {
-            return state.map((layer, index) => {
-                if (index !== action.payload.id) {
-                    return layer
-                }
-                return {
-                    ...layer,
-                    raster_ref: action.payload.ref,
                 }
             })
         }
@@ -122,18 +102,6 @@ const Layers = function (state = initialState, action) {
                 return {
                     ...layer,
                     vector_ref: action.payload.ref,
-                }
-            })
-        }
-
-        case ACTIONS.SET_LAYER_GCODE: {
-            return state.map((layer, index) => {
-                if (index !== action.payload.id) {
-                    return layer
-                }
-                return {
-                    ...layer,
-                    gcode: action.payload.gcode,
                 }
             })
         }
