@@ -1,7 +1,7 @@
 import ACTIONS from '../redux/actions';
 
 /* eslint-disable import/no-webpack-loader-syntax */
-// import PointsWorker from 'worker-loader!../workers/PointsWorker';
+// import VectorWorker from 'worker-loader!../workers/VectorWorker';
 
 async function renderVectorLayer(layer, ref, dispatch) {
     if (layer.raster) {
@@ -22,7 +22,7 @@ async function renderVectorLayer(layer, ref, dispatch) {
             points: []
         }
 
-        // console.log('spawning worker from renderer')
+        console.log('spawning worker from renderer')
         // const worker = new PointsWorker()
         // worker.onmessage = (e) => { console.log(e.data) }
         // worker.postMessage({ pix: pix, width: canvas.width, diameter: layer.settings.toolDiameter })
@@ -38,26 +38,22 @@ async function renderVectorLayer(layer, ref, dispatch) {
                 })
             }
         }
-        dispatch({ type: ACTIONS.SET_LAYER_DATA, payload: { id: layer.id, vector_data: vector_data } })
 
-        // Generate vector preview image
-        canvas.width = layer.settings.stockWidth;
-        canvas.height = layer.settings.stockHeight;
-        var angle = Math.PI * 2;
-        context.fillStyle = `rgba(${vector_data.color.r}, ${vector_data.color.g}, ${vector_data.color.b}, 64)`;
+        // Generate vector preview without canvas
+        var svgPoints = "";
         for (var p = 0; p < vector_data.points.length; p++) {
             var point = vector_data.points[p];
-            context.beginPath();
-            context.arc(point.x, point.y, layer.settings.toolDiameter, 0, angle)
-            context.fill();
-            context.closePath();
+            svgPoints = svgPoints + `<circle cx="${point.x}" cy="${point.y}" r="${layer.settings.toolDiameter}" fill="rgba(${vector_data.color.r}, ${vector_data.color.g}, ${vector_data.color.b}, 64)" />`;
         }
+        var svg = `<svg width="${layer.settings.stockWidth}" height="${layer.settings.stockHeight}" version="1.1" xmlns="http://www.w3.org/2000/svg">${svgPoints}</svg>`
+
         var image = new Image();
         image.onload = () => {
             console.log("Rendered Vector: ", layer.name)
             dispatch({ type: ACTIONS.SET_LAYER_VECTOR, payload: { id: layer.id, vector: image } })
         }
-        image.src = canvas.toDataURL();
+        image.src = 'data:image/svg+xml;charset=utf8,' + encodeURIComponent(svg);
+
 
         //Generate GCODE
         var gcode = `G28\nG0 X0 Y0 Z${layer.settings.heightTravel} F${layer.settings.feedrateTravel}\n`;
