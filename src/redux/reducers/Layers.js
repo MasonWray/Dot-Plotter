@@ -8,8 +8,10 @@ const initialState = [
         mapper: ((r, g, b) => { return convert(r, g, b).C }),
         raster_visible: true,
         raster: undefined,
+        raster_ref: undefined,
         vector_visible: false,
         vector: undefined,
+        vector_ref: undefined,
         gcode: undefined
     },
     {
@@ -18,8 +20,10 @@ const initialState = [
         mapper: ((r, g, b) => { return convert(r, g, b).M }),
         raster_visible: true,
         raster: undefined,
+        raster_ref: undefined,
         vector_visible: false,
         vector: undefined,
+        vector_ref: undefined,
         gcode: undefined
     },
     {
@@ -28,8 +32,10 @@ const initialState = [
         mapper: ((r, g, b) => { return convert(r, g, b).Y }),
         raster_visible: true,
         raster: undefined,
+        raster_ref: undefined,
         vector_visible: false,
         vector: undefined,
+        vector_ref: undefined,
         gcode: undefined
     },
     {
@@ -38,8 +44,10 @@ const initialState = [
         mapper: ((r, g, b) => { return convert(r, g, b).K }),
         raster_visible: true,
         raster: undefined,
+        raster_ref: undefined,
         vector_visible: false,
         vector: undefined,
+        vector_ref: undefined,
         gcode: undefined
     }
 ];
@@ -53,7 +61,7 @@ const Layers = function (state = initialState, action) {
                 }
                 return {
                     ...layer,
-                    raster_visible: !layer.raster_visible
+                    raster_visible: !layer.raster_visible,
                 }
             })
         }
@@ -65,7 +73,19 @@ const Layers = function (state = initialState, action) {
                 }
                 return {
                     ...layer,
-                    raster: action.payload.raster
+                    raster: action.payload.raster,
+                }
+            })
+        }
+
+        case ACTIONS.SET_RASTER_REF: {
+            return state.map((layer, index) => {
+                if (index !== action.payload.id) {
+                    return layer
+                }
+                return {
+                    ...layer,
+                    raster_ref: action.payload.ref,
                 }
             })
         }
@@ -77,7 +97,7 @@ const Layers = function (state = initialState, action) {
                 }
                 return {
                     ...layer,
-                    vector_visible: !layer.vector_visible
+                    vector_visible: !layer.vector_visible,
                 }
             })
         }
@@ -89,7 +109,19 @@ const Layers = function (state = initialState, action) {
                 }
                 return {
                     ...layer,
-                    vector: action.payload.vector
+                    vector: action.payload.vector,
+                }
+            })
+        }
+
+        case ACTIONS.SET_VECTOR_REF: {
+            return state.map((layer, index) => {
+                if (index !== action.payload.id) {
+                    return layer
+                }
+                return {
+                    ...layer,
+                    vector_ref: action.payload.ref,
                 }
             })
         }
@@ -101,7 +133,7 @@ const Layers = function (state = initialState, action) {
                 }
                 return {
                     ...layer,
-                    gcode: action.payload.gcode
+                    gcode: action.payload.gcode,
                 }
             })
         }

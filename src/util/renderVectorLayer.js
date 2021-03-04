@@ -22,7 +22,7 @@ async function renderVectorLayer(layer, ref, dispatch) {
             points: []
         }
 
-        console.log('spawning worker from renderer')
+        // console.log('spawning worker from renderer')
         // const worker = new PointsWorker()
         // worker.onmessage = (e) => { console.log(e.data) }
         // worker.postMessage({ pix: pix, width: canvas.width, diameter: layer.settings.toolDiameter })
@@ -33,38 +33,34 @@ async function renderVectorLayer(layer, ref, dispatch) {
 
             if (pix[i + 3] > Math.floor(Math.random() * Math.floor(255))) {
                 vector_data.points.push({
-                    x: x * layer.settings.toolDiameter,
-                    y: y * layer.settings.toolDiameter
+                    x: Math.round((x * layer.settings.toolDiameter) * 10000) / 10000,
+                    y: Math.round((y * layer.settings.toolDiameter) * 10000) / 10000
                 })
             }
         }
 
         // Generate vector preview without canvas
         var svgPoints = "";
+
+        var gcode = `G28\nG0 X0 Y0 Z${layer.settings.heightTravel} F${layer.settings.feedrateTravel}\n`;
+        var down = `G1 Z${layer.settings.heightPlunge} F${layer.settings.feedratePlunge}\n`;
+        var up = `G0 Z${layer.settings.heightTravel} F${layer.settings.feedrateTravel}\n`;
+
         for (var p = 0; p < vector_data.points.length; p++) {
             var point = vector_data.points[p];
             svgPoints = svgPoints + `<circle cx="${point.x}" cy="${point.y}" r="${layer.settings.toolDiameter}" fill="rgba(${vector_data.color.r}, ${vector_data.color.g}, ${vector_data.color.b}, 64)" />`;
+            var move = `G0 X${point.x} Y${layer.settings.stockHeight - point.y} F${layer.settings.feedrateTravel}\n`;
+            gcode = gcode + move + down + up;
         }
-        var svg = `<svg width="${layer.settings.stockWidth}" height="${layer.settings.stockHeight}" version="1.1" xmlns="http://www.w3.org/2000/svg">${svgPoints}</svg>`
+        dispatch({ type: ACTIONS.SET_LAYER_GCODE, payload: { id: layer.id, gcode: gcode } })
 
+        var svg = `<svg width="${layer.settings.stockWidth}" height="${layer.settings.stockHeight}" version="1.1" xmlns="http://www.w3.org/2000/svg">${svgPoints}</svg>`
         var image = new Image();
         image.onload = () => {
             console.log("Rendered Vector: ", layer.name)
             dispatch({ type: ACTIONS.SET_LAYER_VECTOR, payload: { id: layer.id, vector: image } })
         }
         image.src = 'data:image/svg+xml;charset=utf8,' + encodeURIComponent(svg);
-
-
-        //Generate GCODE
-        var gcode = `G28\nG0 X0 Y0 Z${layer.settings.heightTravel} F${layer.settings.feedrateTravel}\n`;
-        var down = `G1 Z${layer.settings.heightPlunge} F${layer.settings.feedratePlunge}\n`;
-        var up = `G0 Z${layer.settings.heightTravel} F${layer.settings.feedrateTravel}\n`;
-        for (var g = 0; g < vector_data.points.length; g++) {
-            var gpoint = vector_data.points[g];
-            var move = `G0 X${Math.round(gpoint.x * 1000) / 1000} Y${Math.round((layer.settings.stockHeight - gpoint.y) * 1000) / 1000} F${layer.settings.feedrateTravel}\n`;
-            gcode = gcode + move + down + up;
-        }
-        dispatch({ type: ACTIONS.SET_LAYER_GCODE, payload: { id: layer.id, gcode: gcode } })
     }
 }
 
