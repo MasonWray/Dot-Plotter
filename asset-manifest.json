@@ -1,0 +1,26 @@
+{
+  "files": {
+    "main.css": "/Dot-Plotter/static/css/main.d20d502b.chunk.css",
+    "main.js": "/Dot-Plotter/static/js/main.20050d3c.chunk.js",
+    "main.js.map": "/Dot-Plotter/static/js/main.20050d3c.chunk.js.map",
+    "runtime-main.js": "/Dot-Plotter/static/js/runtime-main.b6757159.js",
+    "runtime-main.js.map": "/Dot-Plotter/static/js/runtime-main.b6757159.js.map",
+    "static/css/2.ea5d6776.chunk.css": "/Dot-Plotter/static/css/2.ea5d6776.chunk.css",
+    "static/js/2.481ab402.chunk.js": "/Dot-Plotter/static/js/2.481ab402.chunk.js",
+    "static/js/2.481ab402.chunk.js.map": "/Dot-Plotter/static/js/2.481ab402.chunk.js.map",
+    "index.html": "/Dot-Plotter/index.html",
+    "static/css/2.ea5d6776.chunk.css.map": "/Dot-Plotter/static/css/2.ea5d6776.chunk.css.map",
+    "static/css/main.d20d502b.chunk.css.map": "/Dot-Plotter/static/css/main.d20d502b.chunk.css.map",
+    "static/js/2.481ab402.chunk.js.LICENSE.txt": "/Dot-Plotter/static/js/2.481ab402.chunk.js.LICENSE.txt",
+    "static/js/Worker.42e0c0a9.worker.js": "/Dot-Plotter/static/js/Worker.42e0c0a9.worker.js",
+    "static/js/Worker.42e0c0a9.worker.js.LICENSE.txt": "/Dot-Plotter/static/js/Worker.42e0c0a9.worker.js.LICENSE.txt",
+    "static/js/Worker.42e0c0a9.worker.js.map": "/Dot-Plotter/static/js/Worker.42e0c0a9.worker.js.map"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.b6757159.js",
+    "static/css/2.ea5d6776.chunk.css",
+    "static/js/2.481ab402.chunk.js",
+    "static/css/main.d20d502b.chunk.css",
+    "static/js/main.20050d3c.chunk.js"
+  ]
+}
