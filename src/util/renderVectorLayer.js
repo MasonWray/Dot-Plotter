@@ -1,7 +1,8 @@
 import ACTIONS from '../redux/actions';
+import JOBS from '../workers/jobs';
 
 /* eslint-disable import/no-webpack-loader-syntax */
-import VectorWorker from 'worker-loader!../workers/VectorWorker';
+import Worker from 'worker-loader!../workers/Worker';
 
 function renderVectorLayer(layer, ref, dispatch) {
     return new Promise((resolve, reject) => {
@@ -18,24 +19,25 @@ function renderVectorLayer(layer, ref, dispatch) {
             var imgd = context.getImageData(0, 0, canvas.width, canvas.height);
             var pix = imgd.data;
 
-            // Send rendering task to separate thread
-            console.log("Creating Web Worker");
-            const worker = new VectorWorker()
+            const worker = new Worker()
+
+            // Receive rendering result from worker
             worker.onmessage = (e) => {
                 var image = new Image();
                 image.onload = () => {
                     dispatch({ type: ACTIONS.SET_LAYER_VECTOR, payload: { id: layer.id, vector: image } })
                     resolve({
                         name: e.data.name,
-                        image: image,
+                        // image: image,
                         gcode: e.data.gcode
                     });
                 }
                 image.src = e.data.image;
             }
 
-            // Recieve result 
+            // Send rendering task to web worker
             worker.postMessage({
+                job: JOBS.VECTOR,
                 pix: pix,
                 settings: {
                     heightTravel: layer.settings.heightTravel,

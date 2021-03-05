@@ -3,8 +3,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import JSZip from 'jszip';
 
 import renderVectorLayer from '../util/renderVectorLayer';
-
 import ACTIONS from '../redux/actions';
+import JOBS from '../workers/jobs';
+
+/* eslint-disable import/no-webpack-loader-syntax */
+import Worker from 'worker-loader!../workers/Worker';
 
 function OutputSettings(props) {
     const settings = useSelector((state) => state.OutputSettings);
@@ -32,11 +35,19 @@ function OutputSettings(props) {
 
                     // Package gcode files when processing is complete
                     if (gcode.length === layers.length) {
-                        var zip = new JSZip();
-                        gcode.forEach((path) => { zip.file(`${path.name}.gcode`, path.gcode) })
-                        zip.generateAsync({ type: "blob" }).then((pkg) => {
-                            const fileDownloadUrl = URL.createObjectURL(pkg);
-                            setPkg(fileDownloadUrl);
+
+                        const worker = new Worker();
+
+                        // Receive archive result from worker
+                        worker.onmessage = (e) => {
+                            setPkg(e.data);
+                            console.log("Archive Finished")
+                        }
+
+                        // Send archive job to web worker
+                        worker.postMessage({
+                            job: JOBS.ARCHIVE,
+                            gcode: gcode
                         })
                     }
                 })
