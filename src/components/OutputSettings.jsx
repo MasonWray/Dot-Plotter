@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import JSZip from 'jszip';
 
 import renderVectorLayer from '../util/renderVectorLayer';
 import ACTIONS from '../redux/actions';
