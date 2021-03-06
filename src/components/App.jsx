@@ -10,7 +10,10 @@ function App() {
         <div>
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
                 <div className="container-fluid">
-                    <div className="navbar-brand">Dot Plotter</div>
+                    <div className="navbar-brand">
+                        <img src="https://masonwray.github.io/Dot-Plotter/favicon.ico" alt="Logo" height="32" />
+                        {"Dot Plotter"}
+                    </div>
                     <div className="d-flex">
                         <div className="nav-item">
                             <div className="nav-link btn-group">
