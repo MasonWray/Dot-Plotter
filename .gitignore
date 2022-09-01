@@ -22,7 +22,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 devlinks.md
-package-lock.json
 test.png
 test2.jpg
 test3.jpg
