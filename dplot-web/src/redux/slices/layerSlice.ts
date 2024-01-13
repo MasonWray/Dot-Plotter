@@ -7,7 +7,7 @@ interface RgbColor {
     b: number
 }
 
-interface DisplayLayer {
+export interface LayerData {
     name: string,
     color: RgbColor,
     mapper: (r: number, g: number, b: number) => number,
@@ -19,7 +19,7 @@ interface DisplayLayer {
 }
 
 interface LayerState {
-    data: DisplayLayer[]
+    data: LayerData[]
 }
 
 const initialState: LayerState = {
