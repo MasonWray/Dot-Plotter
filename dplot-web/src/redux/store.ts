@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import layerSlice from './slices/layerSlice';
+import outputSlice from './slices/outputSlice';
 
 export const store = configureStore({
     reducer: {
-        layers: layerSlice
+        layers: layerSlice,
+        output: outputSlice,
     }
 });
 
