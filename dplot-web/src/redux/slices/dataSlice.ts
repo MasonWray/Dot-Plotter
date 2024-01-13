@@ -1,20 +1,26 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 interface DataState {
-    sourceImage: HTMLImageElement | undefined
+    imageData: string | undefined
+    imageWidth: number | undefined
+    imageHeight: number | undefined
 }
 
 const initialState: DataState = {
-    sourceImage: undefined,
+    imageData: undefined,
+    imageWidth: undefined,
+    imageHeight: undefined
 }
 
 export const dataSlice = createSlice({
     name: 'data',
     initialState,
     reducers: {
-        setSourceImage: (state, action: PayloadAction<HTMLImageElement>) => {
-            // state.sourceImage = action.payload;
-        }
+        setSourceImage: (state, action: PayloadAction<{data: string, w?: number, h?: number}>) => {
+            state.imageData = action.payload.data;
+            state.imageWidth = action.payload.w;
+            state.imageHeight = action.payload.h;
+        },
     }
 });
 

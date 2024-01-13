@@ -1,6 +1,7 @@
 'use client'
 
 import { useAppDispatch } from '@/redux/hooks';
+import { setSourceImage } from '@/redux/slices/dataSlice';
 import { ChangeEvent } from 'react';
 
 export function FileSelector() {
@@ -16,10 +17,7 @@ export function FileSelector() {
         fr.onload = () => {
             if (!fr.result) { return; }
             img.src = `${fr.result}`;
-            img.onload = () => {
-                // dispatch({ type: ACTIONS.SET_SOURCE_IMAGE, payload: img })
-                // dispatch({ type: ACTIONS.SET_SOURCE_SIZE, payload: { width: img.width, height: img.height } })
-            }
+            img.onload = () => dispatch(setSourceImage({ data: `${fr.result}`, w: img.width, h: img.height }));
         }
         fr.readAsDataURL(e.target.files[0])
     }
@@ -29,10 +27,7 @@ export function FileSelector() {
             <div className="card-header">File Selector</div>
             <div className="card-body">
                 <div className="form-group">
-                    <input
-                        type="file"
-                        className="form-control-file"
-                        onChange={handleFileChange} />
+                    <input type="file" className="form-control-file" onChange={handleFileChange} />
                 </div>
             </div>
         </div>
