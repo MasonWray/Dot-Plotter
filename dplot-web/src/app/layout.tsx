@@ -3,7 +3,8 @@
 import { store } from '@/redux/store'
 import { Inter } from 'next/font/google'
 import { Provider as ReduxProvider } from 'react-redux'
-import './globals.css'
+// import './globals.css'
+import 'bootstrap/dist/css/bootstrap.css'
 
 const inter = Inter({ subsets: ['latin'] })
 

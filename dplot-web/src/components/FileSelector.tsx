@@ -25,7 +25,7 @@ export function FileSelector() {
     }
 
     return (
-        <div className="card">
+        <div className="card mb-4">
             <div className="card-header">File Selector</div>
             <div className="card-body">
                 <div className="form-group">

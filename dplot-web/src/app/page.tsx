@@ -23,7 +23,7 @@ export default function Home() {
             </div>
           </div >
         </nav >
-        <div className="container-fluid">
+        <div className="container-fluid mt-4">
           <div className="row">
             {/* Left Sidebar */}
             <div className="col-sm-3">
