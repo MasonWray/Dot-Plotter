@@ -1,4 +1,3 @@
-import { RgbToCmyk } from '@/lib/RbgToCmyk';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 interface RgbColor {
@@ -7,10 +6,14 @@ interface RgbColor {
     b: number
 }
 
+export enum ColorChannel {
+    C, M, Y, K,
+}
+
 export interface LayerData {
     name: string,
     color: RgbColor,
-    mapper: (r: number, g: number, b: number) => number,
+    channel: ColorChannel
     raster_visible: boolean,
     raster: undefined,
     vector_visible: boolean,
@@ -27,7 +30,7 @@ const initialState: LayerState = {
         {
             name: 'Cyan',
             color: { r: 0, g: 255, b: 255 },
-            mapper: (r, g, b) => RgbToCmyk(r, g, b).C,
+            channel: ColorChannel.C,
             raster_visible: true,
             raster: undefined,
             vector_visible: false,
@@ -37,7 +40,7 @@ const initialState: LayerState = {
         {
             name: 'Magenta',
             color: { r: 255, g: 0, b: 255 },
-            mapper: (r, g, b) => RgbToCmyk(r, g, b).M,
+            channel: ColorChannel.M,
             raster_visible: true,
             raster: undefined,
             vector_visible: false,
@@ -47,7 +50,7 @@ const initialState: LayerState = {
         {
             name: 'Yellow',
             color: { r: 255, g: 255, b: 0 },
-            mapper: (r, g, b) => RgbToCmyk(r, g, b).Y,
+            channel: ColorChannel.Y,
             raster_visible: true,
             raster: undefined,
             vector_visible: false,
@@ -57,7 +60,7 @@ const initialState: LayerState = {
         {
             name: 'Black',
             color: { r: 0, g: 0, b: 0 },
-            mapper: (r, g, b) => RgbToCmyk(r, g, b).K,
+            channel: ColorChannel.K,
             raster_visible: true,
             raster: undefined,
             vector_visible: false,
