@@ -1,16 +1,28 @@
 'use client'
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { toggleRasterVisibility, toggleVectorVisibility } from '@/redux/slices/layerSlice';
-import { useRef } from 'react';
+import { setLayerRaster, toggleRasterVisibility, toggleVectorVisibility } from '@/redux/slices/layerSlice';
+import { useEffect, useRef } from 'react';
 import { VisIcon } from './VisIcon';
+import { renderRasterLayer } from '@/lib/renderRasterLayer';
 
 export function Layer({ id }: { id: number }) {
     const dispatch = useAppDispatch();
     const rasterLayerRef = useRef<HTMLCanvasElement>(null);
     const vectorPreviewRef = useRef<HTMLCanvasElement>(null);
     const layer = useAppSelector(state => state.layers.data[id]);
-    const source = useAppSelector(state => state.data.imageData);
+    const source = useAppSelector(state => state.data.sourceImage);
+
+    const rasterData = useAppSelector(state => state.layers.data[id].raster);
+
+    useEffect(() => {
+        if (!rasterData && source) {
+            renderRasterLayer(layer, rasterLayerRef, source)
+                .then(imgData => {
+                    dispatch(setLayerRaster({ id, data: imgData }));
+                });
+        }
+    }, [rasterData, layer, source, id, dispatch])
 
     return (
         <li className="list-group-item">
