@@ -18,7 +18,6 @@ export interface LayerData {
     raster: undefined,
     vector_visible: boolean,
     vector: undefined,
-    vector_ref: undefined,
 }
 
 interface LayerState {
@@ -35,7 +34,6 @@ const initialState: LayerState = {
             raster: undefined,
             vector_visible: false,
             vector: undefined,
-            vector_ref: undefined,
         },
         {
             name: 'Magenta',
@@ -45,7 +43,6 @@ const initialState: LayerState = {
             raster: undefined,
             vector_visible: false,
             vector: undefined,
-            vector_ref: undefined,
         },
         {
             name: 'Yellow',
@@ -55,7 +52,6 @@ const initialState: LayerState = {
             raster: undefined,
             vector_visible: false,
             vector: undefined,
-            vector_ref: undefined,
         },
         {
             name: 'Black',
@@ -65,7 +61,6 @@ const initialState: LayerState = {
             raster: undefined,
             vector_visible: false,
             vector: undefined,
-            vector_ref: undefined,
         }
     ]
 }
@@ -86,9 +81,6 @@ export const layerSlice = createSlice({
         setLayerVector: (state, action: PayloadAction<number>) => {
             console.log(action)
         },
-        setVectorRef: (state, action: PayloadAction<number>) => {
-            console.log(action)
-        },
     }
 });
 
@@ -97,7 +89,6 @@ export const {
     setLayerRaster,
     toggleVectorVisibility,
     setLayerVector,
-    setVectorRef
 } = layerSlice.actions;
 
 export default layerSlice.reducer;

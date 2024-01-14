@@ -8,10 +8,7 @@ export function Layers() {
 
     return (
         <div className="card">
-            <div className="card-header">
-                {"Layers"}
-            </div>
-
+            <div className="card-header">{"Layers"}</div>
             <ul className="list-group list-group-flush">
                 {layers.map((layer, index) => <Layer key={index} id={index} />)}
             </ul>
