@@ -15,7 +15,7 @@ const initialState: OutputState = {
     needsUpdate: true,
     stockWidth: 100,
     stockHeight: 100,
-    toolDiameter: 0.4,
+    toolDiameter: 1.0,
     feedrateTravel: 2000,
     feedratePlunge: 1200,
     heightTravel: 3,

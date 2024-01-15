@@ -20,7 +20,7 @@ export function FileSelector() {
             img.src = `${fr.result}`;
             img.onload = () => {
                 dispatch(setSourceImage({ data: `${fr.result}`, w: img.width, h: img.height }));
-                dispatch(setOutputSize({ w: img.width / 10, h: img.height / 10 }));
+                dispatch(setOutputSize({ w: img.width / 20, h: img.height / 20 }));
             }
         }
         fr.readAsDataURL(e.target.files[0])

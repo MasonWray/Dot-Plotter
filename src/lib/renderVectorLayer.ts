@@ -21,29 +21,24 @@ export async function renderVectorLayer(layer: LayerData, canvasRef: RefObject<H
     // Get pixel data
     const img = await getImageFromDataUri(layer.raster);
     context.drawImage(img, 0, 0);
-    // const imgd = context.getImageData(0, 0, canvas.width, canvas.height);
-    // const pix = imgd.data;
+    const imgd = context.getImageData(0, 0, canvas.width, canvas.height);
+    const pix = imgd.data;
 
     let svgPoints = "";
-    // for (var i = 0, n = pix.length; i < n; i += 4) {
-    //     if (pix[i + 3] > Math.floor(Math.random() * Math.floor(255))) {
-
-    //         // Get x,y coordinates of pixel in paper space
-    //         var x = (i / 4) % setup.stockWidth;
-    //         var y = Math.floor((i / 4) / setup.stockWidth);
-    //         x = Math.round((x * setup.toolDiameter) * 10000) / 10000;
-    //         y = Math.round((y * setup.toolDiameter) * 10000) / 10000;
-
-    //         // Draw dot on SVG preview
-    //         svgPoints = svgPoints + `<circle cx="${x}" cy="${y}" r="${setup.toolDiameter}" fill="rgba(${layer.color.r}, ${layer.color.g}, ${layer.color.b}, 64)" />`;
-    //     }
-    // }
+    for (var i = 0, n = pix.length; i < n; i += 4) {
+        if (pix[i + 3] > Math.floor(Math.random() * Math.floor(255))) {
+            // Get x,y coordinates of pixel in paper space
+            var x = (i / 4) % setup.stockWidth;
+            var y = Math.floor((i / 4) / setup.stockWidth);
+            x = Math.round((x * setup.toolDiameter) * 10000) / 10000;
+            y = Math.round((y * setup.toolDiameter) * 10000) / 10000;
+            
+            // Draw dot on SVG preview
+            svgPoints = svgPoints + `<circle cx="${x}" cy="${y}" r="${setup.toolDiameter}" fill="rgba(${layer.color.r}, ${layer.color.g}, ${layer.color.b}, 64)" />`;
+        }
+    }
 
     const svg = `<svg width="${setup.stockWidth}" height="${setup.stockHeight}" version="1.1" xmlns="http://www.w3.org/2000/svg">${svgPoints}</svg>`;
-    // const svg = `<svg width="${setup.stockWidth}" height="${setup.stockHeight}" version="1.1" xmlns="http://www.w3.org/2000/svg">
-    //     <rect width="${setup.stockWidth - 10}" height="${setup.stockHeight - 10}" x="5" y="5"/>
-    // </svg>`;
 
-    // return await getDataUriFromSvg(canvasRef, svg);
-    return svg;
+    return await getDataUriFromSvg(canvasRef, svg);
 }
