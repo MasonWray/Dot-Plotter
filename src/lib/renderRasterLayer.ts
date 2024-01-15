@@ -6,6 +6,8 @@ import { getImageFromDataUri } from './getImageFromDataUri';
 import { RgbToCmyk } from './RbgToCmyk';
 
 export async function renderRasterLayer(layer: LayerData, canvasRef: RefObject<HTMLCanvasElement>, sourceImage: SourceImageData) {
+    console.log(`Rendering raster layer ${layer.channel}`);
+
     // Clear canvas and set it to the size of the source image
     const canvas = canvasRef.current;
     if (!canvas) { throw new ImageProcessingException('Scratch canvas was null.'); }

@@ -10,6 +10,7 @@ export function Preview() {
 
     const layers = useAppSelector(state => state.layers.data);
     const imageData = useAppSelector(state => state.data.sourceImage);
+    const setup = useAppSelector(state => state.output);
 
     const [size, setSize] = useState({ w: 0, h: 0 });
 
@@ -44,21 +45,24 @@ export function Preview() {
                         context.scale(canvas.width / imageData.imageWidth, canvas.height / imageData.imageHeight)
                         context.drawImage(img, 0, 0);
                         context.restore()
-                    })
+                    });
             }
         })
 
         // Draw vector Layers
         layers.forEach((layer) => {
             if (layer.vector && layer.vector_visible) {
-                context.save()
-                // TODO determine layer.vector type 
-                // context.scale(canvas.width / layer.vector.width, canvas.height / layer.vector.height)
-                context.drawImage(layer.vector, 0, 0);
-                context.restore()
+                getImageFromDataUri(layer.vector)
+                    .then(img => {
+                        console.log(img.width, img.height)
+                        context.save()
+                        context.scale(canvas.width / setup.stockWidth, canvas.height / setup.stockHeight)
+                        context.drawImage(img, 0, 0);
+                        context.restore()
+                    });
             }
         })
-    }, [imageData, layers, size]);
+    }, [imageData, layers, size, setup]);
 
     return (
         <div className="card" ref={previewRef}>

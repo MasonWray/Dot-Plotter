@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-interface OutputState {
+export interface OutputState {
     needsUpdate: boolean,
     stockWidth: number,
     stockHeight: number,
@@ -13,8 +13,8 @@ interface OutputState {
 
 const initialState: OutputState = {
     needsUpdate: true,
-    stockWidth: 0,
-    stockHeight: 0,
+    stockWidth: 100,
+    stockHeight: 100,
     toolDiameter: 0.4,
     feedrateTravel: 2000,
     feedratePlunge: 1200,

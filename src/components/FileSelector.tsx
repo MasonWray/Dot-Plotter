@@ -2,6 +2,7 @@
 
 import { useAppDispatch } from '@/redux/hooks';
 import { setSourceImage } from '@/redux/slices/dataSlice';
+import { setOutputSize } from '@/redux/slices/outputSlice';
 import { ChangeEvent } from 'react';
 
 export function FileSelector() {
@@ -17,7 +18,10 @@ export function FileSelector() {
         fr.onload = () => {
             if (!fr.result) { return; }
             img.src = `${fr.result}`;
-            img.onload = () => dispatch(setSourceImage({ data: `${fr.result}`, w: img.width, h: img.height }));
+            img.onload = () => {
+                dispatch(setSourceImage({ data: `${fr.result}`, w: img.width, h: img.height }));
+                dispatch(setOutputSize({ w: img.width / 10, h: img.height / 10 }));
+            }
         }
         fr.readAsDataURL(e.target.files[0])
     }

@@ -18,7 +18,7 @@ export interface LayerData {
     raster_visible: boolean,
     raster: string | undefined,
     vector_visible: boolean,
-    vector: undefined,
+    vector: string | undefined,
 }
 
 interface LayerState {
@@ -83,8 +83,8 @@ export const layerSlice = createSlice({
         toggleVectorVisibility: (state, action: PayloadAction<number>) => {
             state.data[action.payload].vector_visible = !state.data[action.payload].vector_visible;
         },
-        setLayerVector: (state, action: PayloadAction<{ id: number }>) => {
-            console.log(`Updating ${action.payload.id} vector.`);
+        setLayerVector: (state, action: PayloadAction<{ id: number, data: string }>) => {
+            state.data[action.payload.id].vector = action.payload.data;
         },
     }
 });

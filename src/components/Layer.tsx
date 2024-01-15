@@ -1,19 +1,23 @@
 'use client'
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { setLayerRaster, toggleRasterVisibility, toggleVectorVisibility } from '@/redux/slices/layerSlice';
+import { setLayerRaster, setLayerVector, toggleRasterVisibility, toggleVectorVisibility } from '@/redux/slices/layerSlice';
 import { useEffect, useRef } from 'react';
 import { VisIcon } from './VisIcon';
 import { renderRasterLayer } from '@/lib/renderRasterLayer';
+import { renderVectorLayer } from '@/lib/renderVectorLayer';
 
 export function Layer({ id }: { id: number }) {
     const dispatch = useAppDispatch();
     const rasterLayerRef = useRef<HTMLCanvasElement>(null);
-    const vectorPreviewRef = useRef<HTMLCanvasElement>(null);
+    const vectorLayerRef = useRef<HTMLCanvasElement>(null);
     const layer = useAppSelector(state => state.layers.data[id]);
     const source = useAppSelector(state => state.data.sourceImage);
+    const setup = useAppSelector(state => state.output);
 
     const rasterData = useAppSelector(state => state.layers.data[id].raster);
+    const vectorData = useAppSelector(state => state.layers.data[id].vector);
+
 
     useEffect(() => {
         if (!rasterData && source) {
@@ -22,7 +26,16 @@ export function Layer({ id }: { id: number }) {
                     dispatch(setLayerRaster({ id, data: imgData }));
                 });
         }
-    }, [rasterData, layer, source, id, dispatch])
+    }, [rasterData, layer, source, id, dispatch]);
+
+    useEffect(() => {
+        if (rasterData && source) {
+            renderVectorLayer(layer, vectorLayerRef, source, setup)
+                .then(svgData => {
+                    dispatch(setLayerVector({ id, data: svgData }));
+                });
+        }
+    }, [rasterData, source, setup, id, dispatch]);
 
     return (
         <li className="list-group-item">
@@ -43,7 +56,7 @@ export function Layer({ id }: { id: number }) {
                 </div>
             </div>
             <canvas ref={rasterLayerRef} hidden={true} />
-            <canvas ref={vectorPreviewRef} hidden={true} />
+            <canvas ref={vectorLayerRef} hidden={false} />
         </li>
     )
 }
