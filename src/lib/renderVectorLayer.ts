@@ -1,10 +1,10 @@
 import ImageProcessingException from '@/defs/ImageProdessingException';
 import { SourceImageData } from '@/redux/slices/dataSlice';
 import { LayerData } from '@/redux/slices/layerSlice';
-import { RefObject } from 'react';
-import { getImageFromDataUri } from './getImageFromDataUri';
 import { OutputState } from '@/redux/slices/outputSlice';
+import { RefObject } from 'react';
 import { getDataUriFromSvg } from './getDataUriFromSvg';
+import { getImageFromDataUri } from './getImageFromDataUri';
 
 export async function renderVectorLayer(layer: LayerData, canvasRef: RefObject<HTMLCanvasElement>, sourceImage: SourceImageData, setup: OutputState) {
     console.log(`Rendering vector layer `);
@@ -25,6 +25,10 @@ export async function renderVectorLayer(layer: LayerData, canvasRef: RefObject<H
     const pix = imgd.data;
 
     let svgPoints = "";
+    let gcode = `G28\nG0 X0 Y0 Z${setup.heightTravel} F${setup.feedrateTravel}\n`;
+    const down = `G1 Z${setup.heightPlunge} F${setup.feedratePlunge}\n`;
+    const up = `G0 Z${setup.heightTravel} F${setup.feedrateTravel}\n`;
+
     for (var i = 0, n = pix.length; i < n; i += 4) {
         if (pix[i + 3] > Math.floor(Math.random() * Math.floor(255))) {
             // Get x,y coordinates of pixel in paper space
@@ -32,9 +36,13 @@ export async function renderVectorLayer(layer: LayerData, canvasRef: RefObject<H
             var y = Math.floor((i / 4) / setup.stockWidth);
             x = Math.round((x * setup.toolDiameter) * 10000) / 10000;
             y = Math.round((y * setup.toolDiameter) * 10000) / 10000;
-            
+
             // Draw dot on SVG preview
             svgPoints = svgPoints + `<circle cx="${x}" cy="${y}" r="${setup.toolDiameter}" fill="rgba(${layer.color.r}, ${layer.color.g}, ${layer.color.b}, 64)" />`;
+
+            // Add move to GCODE
+            var move = `G0 X${x} Y${setup.stockHeight - y} F${setup.feedrateTravel}\n`;
+            gcode = gcode + move + down + up;
         }
     }
 

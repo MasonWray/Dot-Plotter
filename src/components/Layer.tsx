@@ -56,7 +56,7 @@ export function Layer({ id }: { id: number }) {
                 </div>
             </div>
             <canvas ref={rasterLayerRef} hidden={true} />
-            <canvas ref={vectorLayerRef} hidden={false} />
+            <canvas ref={vectorLayerRef} hidden={true} />
         </li>
     )
 }
