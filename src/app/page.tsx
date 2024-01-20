@@ -2,6 +2,7 @@ import { FileSelector } from '@/components/FileSelector'
 import { Layers } from '@/components/Layers'
 import { OutputSettings } from '@/components/OutputSettings'
 import { Preview } from '@/components/Preview'
+import 'bootstrap/dist/css/bootstrap.css'
 
 export default function Home() {
   return (

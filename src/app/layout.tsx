@@ -1,9 +1,9 @@
 'use client'
 
+import NavShell from '@/components/NavBar'
 import { store } from '@/redux/store'
 import { CacheProvider } from '@chakra-ui/next-js'
 import { ChakraProvider } from '@chakra-ui/react'
-import 'bootstrap/dist/css/bootstrap.css'
 import { Inter } from 'next/font/google'
 import { Provider as ReduxProvider } from 'react-redux'
 
@@ -16,6 +16,7 @@ export default function RootLayout({ children, }: { children: React.ReactNode })
         <CacheProvider>
           <ChakraProvider>
             <ReduxProvider store={store}>
+              <NavShell />
               {children}
             </ReduxProvider>
           </ChakraProvider>
