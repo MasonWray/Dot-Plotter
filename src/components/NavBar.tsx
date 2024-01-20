@@ -1,8 +1,8 @@
 'use client'
 
-import { Box, Button, Flex, HStack, useColorModeValue } from '@chakra-ui/react'
-import Image from 'next/image';
-import { FaGithub } from 'react-icons/fa'
+import { MoonIcon, SunIcon } from '@chakra-ui/icons';
+import { Box, Button, Flex, HStack, Stack, useColorMode, useColorModeValue } from '@chakra-ui/react';
+import { FaGithub } from 'react-icons/fa';
 
 interface Props {
     children: React.ReactNode
@@ -29,6 +29,8 @@ const NavLink = (props: Props) => {
 }
 
 export default function WithAction() {
+    const { colorMode, toggleColorMode } = useColorMode();
+
     return (
         <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
             <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
@@ -39,7 +41,12 @@ export default function WithAction() {
                     </HStack>
                 </HStack>
                 <Flex alignItems={'center'}>
-                    <Button variant={'solid'} colorScheme={'teal'} size={'sm'} mr={4} leftIcon={<FaGithub />}>{'View on GitHub'}</Button>
+                    <Stack direction={'row'} spacing={7}>
+                        <Button onClick={toggleColorMode}>
+                            {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+                        </Button>
+                        <Button variant={'solid'} colorScheme={'teal'} size={'sm'} mr={4} leftIcon={<FaGithub />}>{'View on GitHub'}</Button>
+                    </Stack>
                 </Flex>
             </Flex>
         </Box>
