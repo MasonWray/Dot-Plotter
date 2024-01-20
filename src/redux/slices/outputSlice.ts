@@ -1,9 +1,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-interface OutputState {
+export interface OutputState {
     needsUpdate: boolean,
-    sourceWidth: number,
-    sourceHeight: number,
     stockWidth: number,
     stockHeight: number,
     toolDiameter: number,
@@ -15,11 +13,9 @@ interface OutputState {
 
 const initialState: OutputState = {
     needsUpdate: true,
-    sourceWidth: 0,
-    sourceHeight: 0,
-    stockWidth: 0,
-    stockHeight: 0,
-    toolDiameter: 0.4,
+    stockWidth: 100,
+    stockHeight: 100,
+    toolDiameter: 1.0,
     feedrateTravel: 2000,
     feedratePlunge: 1200,
     heightTravel: 3,
@@ -37,8 +33,6 @@ export const outputSlice = createSlice({
         setSourceSize: (state, action: PayloadAction<{ w: number, h: number }>) => {
             state.stockWidth = action.payload.w;
             state.stockHeight = action.payload.h;
-            state.sourceWidth = action.payload.w;
-            state.sourceHeight = action.payload.h;
         },
         setToolDiameter: (state, action: PayloadAction<number>) => {
             state.toolDiameter = action.payload;

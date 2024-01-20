@@ -1,5 +1,6 @@
 'use client'
 
+import { getImageFromDataUri } from '@/lib/getImageFromDataUri';
 import { useAppSelector } from '@/redux/hooks';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
@@ -8,8 +9,8 @@ export function Preview() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
     const layers = useAppSelector(state => state.layers.data);
-    const settings = useAppSelector(state => state.output);
-    const imageData = useAppSelector(state => state.data.imageData);
+    const imageData = useAppSelector(state => state.data.sourceImage);
+    const setup = useAppSelector(state => state.output);
 
     const [size, setSize] = useState({ w: 0, h: 0 });
 
@@ -33,30 +34,35 @@ export function Preview() {
 
         // Set canvas size based on preview window width and source size
         canvas.width = Math.round(previewRef.current.getBoundingClientRect().width - 20);
-        canvas.height = Math.round(canvas.width * settings.sourceHeight / settings.sourceWidth);
+        canvas.height = Math.round(canvas.width * imageData.imageHeight / imageData.imageWidth);
 
         // Draw raster previews
         layers.forEach((layer) => {
             if (layer.raster && layer.raster_visible) {
-                context.save()
-                // TODO determine layer.raster type 
-                // context.scale(canvas.width / layer.raster.width, canvas.height / layer.raster.height)
-                context.drawImage(layer.raster, 0, 0);
-                context.restore()
+                getImageFromDataUri(layer.raster)
+                    .then(img => {
+                        context.save()
+                        context.scale(canvas.width / imageData.imageWidth, canvas.height / imageData.imageHeight)
+                        context.drawImage(img, 0, 0);
+                        context.restore()
+                    });
             }
         })
 
         // Draw vector Layers
         layers.forEach((layer) => {
             if (layer.vector && layer.vector_visible) {
-                context.save()
-                // TODO determine layer.vector type 
-                // context.scale(canvas.width / layer.vector.width, canvas.height / layer.vector.height)
-                context.drawImage(layer.vector, 0, 0);
-                context.restore()
+                getImageFromDataUri(layer.vector)
+                    .then(img => {
+                        console.log(img.width, img.height)
+                        context.save()
+                        context.scale(canvas.width / setup.stockWidth, canvas.height / setup.stockHeight)
+                        context.drawImage(img, 0, 0);
+                        context.restore()
+                    });
             }
         })
-    }, [settings.sourceWidth, settings.sourceHeight, imageData, layers, size]);
+    }, [imageData, layers, size, setup]);
 
     return (
         <div className="card" ref={previewRef}>
@@ -64,8 +70,8 @@ export function Preview() {
                 {"Preview"}
             </div>
             <div className="card-body d-flex justify-content-center">
-                <canvas ref={canvasRef} ></canvas>
+                <canvas ref={canvasRef} />
             </div>
-        </div >
+        </div>
     )
 }

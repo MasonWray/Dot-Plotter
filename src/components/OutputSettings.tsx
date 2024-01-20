@@ -6,17 +6,15 @@ import { ChangeEvent, useRef, useState } from 'react';
 
 export function OutputSettings() {
     const settings = useAppSelector(state => state.output);
-    const layers = useAppSelector(state => state.layers.data);
     const dispatch = useAppDispatch();
     const download = useRef<HTMLAnchorElement>(null);
+    const { imageHeight, imageWidth } = useAppSelector(state => state.data.sourceImage) ?? { imageHeight: 0, imageWidth: 0 };
     const [pkg, setPkg] = useState();
 
 
     function handleRefresh() {
         // var gcode = [];
 
-        // Render each layer
-        // TODO Figure out what goes here
     }
 
     function handleDownload() {
@@ -27,13 +25,13 @@ export function OutputSettings() {
 
     function handleWidthChange(e: ChangeEvent<HTMLInputElement>) {
         var newWidth = Math.round(parseFloat(e.target.value) < 1 ? 1 : parseFloat(e.target.value) * 1);
-        var newHeight = Math.round(newWidth * settings.sourceHeight / settings.sourceWidth);
+        var newHeight = Math.round(newWidth * imageHeight / imageWidth);
         dispatch(setOutputSize({ w: newWidth, h: newHeight }));
     }
 
     function handleHeightChange(e: ChangeEvent<HTMLInputElement>) {
         var newHeight = Math.round(parseFloat(e.target.value) < 1 ? 1 : parseFloat(e.target.value) * 1);
-        var newWidth = Math.round(newHeight * settings.sourceWidth / settings.sourceHeight);
+        var newWidth = Math.round(newHeight * imageWidth / imageHeight);
         dispatch(setOutputSize({ w: newWidth, h: newHeight }));
     }
 
@@ -50,7 +48,7 @@ export function OutputSettings() {
                             <input
                                 type="number"
                                 className="form-control"
-                                disabled={!(settings.sourceWidth > 0)}
+                                disabled={!(imageWidth > 0)}
                                 value={settings.stockWidth}
                                 onChange={(e) => { handleWidthChange(e) }}
                             />
@@ -58,13 +56,13 @@ export function OutputSettings() {
                     </div>
                     <div className="row">
                         <div className="col">
-                            <label className="form-label">Stock Height (mm)</label>
+                            <label className="form-label">{'Stock Height (mm)'}</label>
                         </div>
                         <div className="col">
                             <input
                                 type="number"
                                 className="form-control"
-                                disabled={!(settings.sourceHeight > 0)}
+                                disabled={!(imageHeight > 0)}
                                 value={settings.stockHeight}
                                 onChange={(e) => { handleHeightChange(e) }}
                             />
