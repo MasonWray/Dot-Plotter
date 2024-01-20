@@ -1,7 +1,7 @@
 'use client'
 
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
-import { Box, Button, Flex, HStack, Stack, useColorMode, useColorModeValue } from '@chakra-ui/react';
+import { Box, Button, Flex, HStack, IconButton, Stack, useColorMode, useColorModeValue } from '@chakra-ui/react';
 import { FaGithub } from 'react-icons/fa';
 
 interface Props {
@@ -42,9 +42,7 @@ export default function WithAction() {
                 </HStack>
                 <Flex alignItems={'center'}>
                     <Stack direction={'row'} spacing={7}>
-                        <Button onClick={toggleColorMode}>
-                            {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
-                        </Button>
+                        <IconButton onClick={toggleColorMode} size={'sm'} icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />} aria-label='toggle-dark-mode' />
                         <Button variant={'solid'} colorScheme={'teal'} size={'sm'} mr={4} leftIcon={<FaGithub />}>{'View on GitHub'}</Button>
                     </Stack>
                 </Flex>
