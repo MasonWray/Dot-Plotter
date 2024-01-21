@@ -2,30 +2,26 @@ import { FileSelector } from '@/components/FileSelector'
 import { Layers } from '@/components/Layers'
 import { OutputSettings } from '@/components/OutputSettings'
 import { Preview } from '@/components/Preview'
+import { Center, Grid, GridItem } from '@chakra-ui/react'
 import 'bootstrap/dist/css/bootstrap.css'
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div>
-        <div className="container-fluid mt-4">
-          <div className="row">
-            {/* Left Sidebar */}
-            <div className="col-sm-3">
-              <FileSelector />
-              <Layers />
-            </div>
-            {/* Preview Area */}
-            <div className="col-sm-6">
-              <Preview />
-            </div>
-            {/* Right Sidebar */}
-            <div className="col-sm-3">
-              <OutputSettings />
-            </div>
-          </div>
-        </div>
-      </div>
+    <main>
+      <Center>
+        <Grid templateColumns={'repeat(6, 1fr)'} gap={4} margin={4}>
+          <GridItem>
+            <FileSelector />
+            <Layers />
+          </GridItem>
+          <GridItem colSpan={4}>
+            <Preview />
+          </GridItem>
+          <GridItem>
+            <OutputSettings />
+          </GridItem>
+        </Grid>
+      </Center>
     </main>
   )
 }
