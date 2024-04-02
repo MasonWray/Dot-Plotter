@@ -1,3 +1,7 @@
 .bp5-tree-node-content{
   height: auto;
 }
+
+.bp5-tree-node-content:active{
+  background-color:rgba(143, 153, 168, 0.15);
+}
