@@ -18,7 +18,7 @@ export function NavbarMenu() {
         </Popover>
       </Navbar.Group>
       <Navbar.Group align={'right'}>
-        <Button icon={'git-branch'} text={'View on GitHub'} />
+        <Button icon={'git-branch'} text={'View on GitHub'} onClick={() => window.open('https://github.com/MasonWray/Dot-Plotter', '_blank')}/>
       </Navbar.Group>
     </Navbar>
   )
