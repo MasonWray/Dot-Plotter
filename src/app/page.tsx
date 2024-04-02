@@ -1,6 +1,5 @@
 'use client'
 
-import { FileSelector } from '@/components/FileSelector'
 import { Layers } from '@/components/Layers'
 import { OutputSettings } from '@/components/OutputSettings'
 import { Preview } from '@/components/Preview'
@@ -18,7 +17,6 @@ export default function Home() {
           <div className="row">
             {/* Left Sidebar */}
             <div className="col-sm-3">
-              <FileSelector />
               <Layers />
             </div>
             {/* Preview Area */}
