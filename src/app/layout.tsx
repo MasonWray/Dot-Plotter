@@ -3,9 +3,12 @@
 import { ImportImageDialog } from '@/components/dialogs/ImportImageDialog'
 import { store } from '@/redux/store'
 import { OverlaysProvider } from '@blueprintjs/core'
-import 'bootstrap/dist/css/bootstrap.css'
 import { Inter } from 'next/font/google'
 import { Provider as ReduxProvider } from 'react-redux'
+
+import 'bootstrap/dist/css/bootstrap.css'
+import "@blueprintjs/core/lib/css/blueprint.css"
+import "normalize.css"
 
 const inter = Inter({ subsets: ['latin'] })
 

@@ -5,9 +5,6 @@ import { OutputSettings } from '@/components/OutputSettings'
 import { Preview } from '@/components/Preview'
 import { NavbarMenu } from '@/components/menus/NavbarMenu'
 
-import "@blueprintjs/core/lib/css/blueprint.css"
-import "normalize.css"
-
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
