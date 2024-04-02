@@ -33,6 +33,11 @@ export const layerSlice = createSlice({
             if (!parentModel) throw new ApplicationDataException(`Parent ${action.payload.parent} not found`);
             state.models.push(action.payload.model);
             parentModel.children.push(action.payload.model.id);
+        },
+        toggleLayerVisibility: (state, action: PayloadAction<string>) => {
+            let model = state.models.find(m => m.id === action.payload);
+            if (!model) throw new ApplicationDataException(`Model ${action.payload} not found`);
+            model.isVisible = !model.isVisible;
         }
     }
 });
@@ -40,6 +45,7 @@ export const layerSlice = createSlice({
 export const {
     addRootFromImage,
     addRootLayer,
+    toggleLayerVisibility
 } = layerSlice.actions;
 
 export function getLayerById(state: RootState, id: string) {

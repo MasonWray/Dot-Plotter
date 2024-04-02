@@ -4,7 +4,7 @@ import { LayerModel } from '@/lib/layers/LayerModel';
 import { useAppSelector } from '@/redux/hooks';
 import { Tree, TreeNodeInfo } from '@blueprintjs/core';
 import { useEffect, useState } from 'react';
-import { LayerNode } from './layers/LayerNode';
+import { LayerPrimaryLabel } from './layers/LayerPrimaryLabel';
 
 function toLayerNode(model: LayerModel | undefined) {
     if (!model) return [];
@@ -12,7 +12,7 @@ function toLayerNode(model: LayerModel | undefined) {
     let node: TreeNodeInfo<LayerModel> = {
         id: model.id,
         hasCaret: true,
-        label: <LayerNode layerId={model.id}/>
+        label: <LayerPrimaryLabel layerId={model.id} />,
     };
     return [node];
 }

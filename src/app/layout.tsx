@@ -10,6 +10,7 @@ import { MachineSettingsDialog } from '@/components/dialogs/MachineSettingsDialo
 import 'bootstrap/dist/css/bootstrap.css'
 import "@blueprintjs/core/lib/css/blueprint.css"
 import "normalize.css"
+import "./globals.css"
 
 const inter = Inter({ subsets: ['latin'] })
 
