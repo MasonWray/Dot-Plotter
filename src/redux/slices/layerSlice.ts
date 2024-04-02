@@ -1,21 +1,8 @@
 import ApplicationDataException from '@/defs/ApplicationDataException';
-import { uniqueId } from '@blueprintjs/core/lib/esm/common/utils';
+import { createImageLayerModel } from '@/lib/layers/ImageLayerModel';
+import { LayerModel } from '@/lib/layers/LayerModel';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../store';
-
-export interface LayerModel {
-    id: string,
-    name: string,
-    width: number,
-    height: number,
-    isVisible: boolean,
-    parent: string | undefined,
-    children: string[]
-}
-
-export interface ImageLayerModel extends LayerModel {
-    data: string
-}
 
 interface LayerState {
     root: LayerModel | undefined
@@ -32,16 +19,8 @@ export const layerSlice = createSlice({
     initialState,
     reducers: {
         addRootFromImage: (state, action: PayloadAction<{ name: string, data: string, width: number, height: number }>) => {
-            const root: ImageLayerModel = {
-                id: uniqueId('layer'),
-                name: action.payload.name,
-                width: action.payload.width,
-                height: action.payload.height,
-                isVisible: true,
-                parent: undefined,
-                children: [],
-                data: action.payload.data
-            }
+            const { name, data, width, height } = action.payload;
+            const root = createImageLayerModel(name, width, height, data);
             state.models.push(root);
             state.root = root;
         },

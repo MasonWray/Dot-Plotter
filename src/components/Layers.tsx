@@ -1,7 +1,7 @@
 'use client'
 
+import { LayerModel } from '@/lib/layers/LayerModel';
 import { useAppSelector } from '@/redux/hooks';
-import { LayerModel } from '@/redux/slices/layerSlice';
 import { Tree, TreeNodeInfo } from '@blueprintjs/core';
 import { useEffect, useState } from 'react';
 import { LayerNode } from './layers/LayerNode';
