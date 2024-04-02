@@ -1,6 +1,7 @@
 
 import { FileMenu } from '@/components/menus/FileMenu'
 import { Button, Dialog, Navbar, Popover } from '@blueprintjs/core'
+import { OutputMenu } from './OutputMenu'
 
 export function NavbarMenu() {
 
@@ -11,6 +12,9 @@ export function NavbarMenu() {
         <Navbar.Divider />
         <Popover content={<FileMenu />}>
           <Button className={'bp5-minimal'} text={'File'} />
+        </Popover>
+        <Popover content={<OutputMenu />}>
+          <Button className={'bp5-minimal'} text={'Output'}/>
         </Popover>
       </Navbar.Group>
       <Navbar.Group align={'right'}>

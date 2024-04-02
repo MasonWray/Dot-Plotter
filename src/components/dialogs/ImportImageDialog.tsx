@@ -1,6 +1,6 @@
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setSourceImage } from '@/redux/slices/dataSlice';
-import { closeImportImageDialog } from '@/redux/slices/menuSlice';
+import { closeAllDialogs } from '@/redux/slices/menuSlice';
 import { setOutputSize } from '@/redux/slices/outputSlice';
 import { Button, Dialog, DialogBody, DialogFooter, FileInput } from '@blueprintjs/core';
 import { ChangeEvent, useState } from 'react';
@@ -24,7 +24,7 @@ export function ImportImageDialog() {
   const [imageData, setImageData] = useState<ImageData | undefined>();
 
   function handleClose() {
-    dispatch(closeImportImageDialog());
+    dispatch(closeAllDialogs());
   }
   console.log(imageData)
 
@@ -63,7 +63,7 @@ export function ImportImageDialog() {
     if (imageData) {
       dispatch(setSourceImage(imageData.source));
       dispatch(setOutputSize(imageData.output));
-      dispatch(closeImportImageDialog());
+      dispatch(closeAllDialogs());
     }
   }
 
