@@ -1,19 +1,30 @@
 'use client'
 
+import { ImportImageDialog } from '@/components/dialogs/ImportImageDialog'
 import { store } from '@/redux/store'
+import { OverlaysProvider } from '@blueprintjs/core'
 import { Inter } from 'next/font/google'
 import { Provider as ReduxProvider } from 'react-redux'
-// import './globals.css'
+import { MachineSettingsDialog } from '@/components/dialogs/MachineSettingsDialog'
+
 import 'bootstrap/dist/css/bootstrap.css'
+import "@blueprintjs/core/lib/css/blueprint.css"
+import "normalize.css"
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function RootLayout({ children, }: { children: React.ReactNode }) {
   return (
     <ReduxProvider store={store}>
-      <html lang="en">
-        <body className={inter.className}>{children}</body>
-      </html>
+      <OverlaysProvider>
+        <html lang="en">
+          <body className={inter.className}>
+            {children}
+            <ImportImageDialog />
+            <MachineSettingsDialog />
+          </body>
+        </html>
+      </OverlaysProvider>
     </ReduxProvider>
   )
 }

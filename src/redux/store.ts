@@ -1,13 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit';
 import dataSlice from './slices/dataSlice';
 import layerSlice from './slices/layerSlice';
+import menuSlice from './slices/menuSlice';
 import outputSlice from './slices/outputSlice';
 
 export const store = configureStore({
     reducer: {
-        layers: layerSlice,
-        output: outputSlice,
         data: dataSlice,
+        layers: layerSlice,
+        menus: menuSlice,
+        output: outputSlice,
     }
 });
 
