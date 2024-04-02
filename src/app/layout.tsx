@@ -1,6 +1,6 @@
 'use client'
 
-import { ImportImageDialog } from '@/components/menus/ImportImageDialog'
+import { ImportImageDialog } from '@/components/dialogs/ImportImageDialog'
 import { store } from '@/redux/store'
 import { OverlaysProvider } from '@blueprintjs/core'
 import 'bootstrap/dist/css/bootstrap.css'
