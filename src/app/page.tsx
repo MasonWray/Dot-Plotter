@@ -1,7 +1,6 @@
 'use client'
 
 import { Layers } from '@/components/Layers'
-import { OutputSettings } from '@/components/OutputSettings'
 import { Preview } from '@/components/Preview'
 import { NavbarMenu } from '@/components/menus/NavbarMenu'
 
@@ -17,12 +16,8 @@ export default function Home() {
               <Layers />
             </div>
             {/* Preview Area */}
-            <div className="col-sm-6">
+            <div className="col-sm-9">
               <Preview />
-            </div>
-            {/* Right Sidebar */}
-            <div className="col-sm-3">
-              <OutputSettings />
             </div>
           </div>
         </div>

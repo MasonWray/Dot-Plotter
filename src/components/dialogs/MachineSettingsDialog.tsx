@@ -43,12 +43,15 @@ export function MachineSettingsDialog() {
   return (
     <Dialog isOpen={isOpen} onClose={handleClose} title={'Machine Setup'}>
       <DialogBody>
-        <FormGroup labelFor={'stock-width'} label={'Stock Width'} labelInfo={'(mm)'}>
-          <NumericInput id={'stock-width'} disabled={!(imageWidth > 0)} value={settings.stockWidth} onValueChange={(n, s) => { handleWidthChange(s) }} />
-        </FormGroup>
-        <FormGroup labelFor={'stock-height'} label={'Stock Height'} labelInfo={'(mm)'}>
-          <NumericInput id={'stock-height'} disabled={!(imageHeight > 0)} value={settings.stockHeight} onValueChange={(n, s) => { handleHeightChange(s) }} />
-        </FormGroup>
+        <div style={{ flexDirection: 'row' }}>
+          <FormGroup labelFor={'stock-width'} label={'Stock Width'} labelInfo={'(mm)'}>
+            <NumericInput id={'stock-width'} disabled={!(imageWidth > 0)} value={settings.stockWidth} onValueChange={(n, s) => { handleWidthChange(s) }} />
+          </FormGroup>
+          <FormGroup labelFor={'stock-height'} label={'Stock Height'} labelInfo={'(mm)'}>
+            <NumericInput id={'stock-height'} disabled={!(imageHeight > 0)} value={settings.stockHeight} onValueChange={(n, s) => { handleHeightChange(s) }} />
+          </FormGroup>
+        </div>
+
         <FormGroup labelFor={'tool-diameter'} label={'Tool Diameter'} labelInfo={'(mm)'}>
           <NumericInput id={'tool-diameter'} step={0.1} value={settings.toolDiameter} onValueChange={(n, s) => dispatch(setToolDiameter(parseFloat(s)))} />
         </FormGroup>
@@ -67,7 +70,7 @@ export function MachineSettingsDialog() {
       </DialogBody>
       <DialogFooter actions={[
         <Button key={0} text='Refresh' intent={'none'} onClick={handleRefresh} />,
-        <Button key={1} text='Download' intent={'primary'} onClick={handleDownload}/>
+        <Button key={1} text='Download' intent={'primary'} onClick={handleDownload} />
       ]} />
     </Dialog>
   )
