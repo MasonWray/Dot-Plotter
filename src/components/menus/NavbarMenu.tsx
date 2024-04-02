@@ -1,6 +1,6 @@
 
 import { FileMenu } from '@/components/menus/FileMenu'
-import { Button, Dialog, Navbar, Popover } from '@blueprintjs/core'
+import { Button, Navbar, Popover } from '@blueprintjs/core'
 import { OutputMenu } from './OutputMenu'
 
 export function NavbarMenu() {
