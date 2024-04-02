@@ -14,12 +14,16 @@ export const dataSlice = createSlice({
     reducers: {
         openImportImageDialog: (state) => {
             state.isImportImageDialogOpen = true
+        },
+        closeImportImageDialog: (state) => {
+            state.isImportImageDialogOpen = false
         }
     }
 });
 
 export const {
     openImportImageDialog,
+    closeImportImageDialog
 } = dataSlice.actions;
 
 export default dataSlice.reducer;
