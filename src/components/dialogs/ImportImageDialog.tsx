@@ -1,5 +1,6 @@
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setSourceImage } from '@/redux/slices/dataSlice';
+import { addRootFromImage } from '@/redux/slices/layerSlice';
 import { closeAllDialogs } from '@/redux/slices/menuSlice';
 import { setOutputSize } from '@/redux/slices/outputSlice';
 import { Button, Dialog, DialogBody, DialogFooter, FileInput } from '@blueprintjs/core';
@@ -26,12 +27,12 @@ export function ImportImageDialog() {
   function handleClose() {
     dispatch(closeAllDialogs());
   }
-  console.log(imageData)
 
   function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
     if (!e.target.files) { return; }
     if (e.target.files.length < 1) { return; }
-    setFilename(e.target.files[0].name ?? '');
+    const fname = e.target.files[0].name ?? '';
+    setFilename(fname);
 
     let fr = new FileReader();
     let img = new Image();
@@ -40,6 +41,7 @@ export function ImportImageDialog() {
       if (!fr.result) { return; }
       img.src = `${fr.result}`;
       img.onload = () => {
+        dispatch(addRootFromImage({ name: fname, data: `${fr.result}`, width: img.width, height: img.height }));
         setImageData({
           source: {
             data: `${fr.result}`,

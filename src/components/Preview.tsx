@@ -8,7 +8,7 @@ export function Preview() {
     const previewRef = useRef<HTMLDivElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
-    const layers = useAppSelector(state => state.layers.data);
+    // const layers = useAppSelector(state => state.layers.data);
     const imageData = useAppSelector(state => state.data.sourceImage);
     const setup = useAppSelector(state => state.output);
 
@@ -26,43 +26,42 @@ export function Preview() {
         return () => window.removeEventListener('resize', updateDims);
     }, [previewRef]);
 
-    useEffect(() => {
-        const canvas = canvasRef.current;
-        if (!canvas) { return; }
-        const context = canvas.getContext("2d");
-        if (!context || !imageData || !previewRef.current) { return; }
+    // useEffect(() => {
+    //     const canvas = canvasRef.current;
+    //     if (!canvas) { return; }
+    //     const context = canvas.getContext("2d");
+    //     if (!context || !imageData || !previewRef.current) { return; }
 
-        // Set canvas size based on preview window width and source size
-        canvas.width = Math.round(previewRef.current.getBoundingClientRect().width - 20);
-        canvas.height = Math.round(canvas.width * imageData.imageHeight / imageData.imageWidth);
+    //     // Set canvas size based on preview window width and source size
+    //     canvas.width = Math.round(previewRef.current.getBoundingClientRect().width - 20);
+    //     canvas.height = Math.round(canvas.width * imageData.imageHeight / imageData.imageWidth);
 
-        // Draw raster previews
-        layers.forEach((layer) => {
-            if (layer.raster && layer.raster_visible) {
-                getImageFromDataUri(layer.raster)
-                    .then(img => {
-                        context.save()
-                        context.scale(canvas.width / imageData.imageWidth, canvas.height / imageData.imageHeight)
-                        context.drawImage(img, 0, 0);
-                        context.restore()
-                    });
-            }
-        })
+    //     // Draw raster previews
+    //     layers.forEach((layer) => {
+    //         if (layer.raster && layer.raster_visible) {
+    //             getImageFromDataUri(layer.raster)
+    //                 .then(img => {
+    //                     context.save()
+    //                     context.scale(canvas.width / imageData.imageWidth, canvas.height / imageData.imageHeight)
+    //                     context.drawImage(img, 0, 0);
+    //                     context.restore()
+    //                 });
+    //         }
+    //     })
 
-        // Draw vector Layers
-        layers.forEach((layer) => {
-            if (layer.vector && layer.vector_visible) {
-                getImageFromDataUri(layer.vector)
-                    .then(img => {
-                        console.log(img.width, img.height)
-                        context.save()
-                        context.scale(canvas.width / setup.stockWidth, canvas.height / setup.stockHeight)
-                        context.drawImage(img, 0, 0);
-                        context.restore()
-                    });
-            }
-        })
-    }, [imageData, layers, size, setup]);
+    //     // Draw vector Layers
+    //     layers.forEach((layer) => {
+    //         if (layer.vector && layer.vector_visible) {
+    //             getImageFromDataUri(layer.vector)
+    //                 .then(img => {
+    //                     context.save()
+    //                     context.scale(canvas.width / setup.stockWidth, canvas.height / setup.stockHeight)
+    //                     context.drawImage(img, 0, 0);
+    //                     context.restore()
+    //                 });
+    //         }
+    //     })
+    // }, [imageData, layers, size, setup]);
 
     return (
         <div className="card" ref={previewRef}>
