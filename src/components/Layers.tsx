@@ -2,31 +2,33 @@
 
 import { LayerModel } from '@/lib/layers/LayerModel';
 import { useAppSelector } from '@/redux/hooks';
-import { Tree, TreeNodeInfo } from '@blueprintjs/core';
+import { Card, H5, Tree, TreeNodeInfo } from '@blueprintjs/core';
 import { useEffect, useState } from 'react';
 import { LayerPrimaryLabel } from './layers/LayerPrimaryLabel';
 
 function toLayerNode(model: LayerModel | undefined) {
-    if (!model) return [];
+  if (!model) return [];
 
-    let node: TreeNodeInfo<LayerModel> = {
-        id: model.id,
-        hasCaret: true,
-        label: <LayerPrimaryLabel layerId={model.id} />,
-    };
-    return [node];
+  let node: TreeNodeInfo<LayerModel> = {
+    id: model.id,
+    hasCaret: true,
+    label: <LayerPrimaryLabel layerId={model.id} />,
+  };
+  return [node];
 }
 
 export function Layers() {
-    const { root, models } = useAppSelector(state => state.layers);
-    const [contents, setContents] = useState<TreeNodeInfo<LayerModel>[]>([]);
-    console.log(root)
+  const { root, models } = useAppSelector(state => state.layers);
+  const [contents, setContents] = useState<TreeNodeInfo<LayerModel>[]>([]);
 
-    useEffect(() => {
-        setContents(toLayerNode(root));
-    }, [root, models]);
+  useEffect(() => {
+    setContents(toLayerNode(root));
+  }, [root, models]);
 
-    return (
-        <Tree contents={contents} />
-    )
+  return (
+    <Card>
+      <H5>Layers</H5>
+      <Tree contents={contents} />
+    </Card>
+  )
 }
