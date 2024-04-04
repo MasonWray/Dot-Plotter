@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { getLayerById, toggleLayerVisibility } from '@/redux/slices/layerSlice';
-import { Button } from '@blueprintjs/core';
-import { IoMdAdd, IoMdEye, IoMdEyeOff } from "react-icons/io";
+import { Button, Menu, MenuItem, Popover } from '@blueprintjs/core';
+import { FaArrowsSplitUpAndLeft, FaEllipsisVertical, FaEye, FaEyeSlash } from "react-icons/fa6";
 
 export function LayerPrimaryLabel({ layerId }: { layerId: string }) {
   const dispatch = useAppDispatch();
@@ -18,9 +18,19 @@ export function LayerPrimaryLabel({ layerId }: { layerId: string }) {
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'row', columnGap: 4 }}>
-        <Button intent={'none'} icon={layerModel.isVisible ? <IoMdEyeOff /> : <IoMdEye />} onClick={() => dispatch(toggleLayerVisibility(layerId))} />
-        <Button intent={'none'} icon={<IoMdAdd />} />
+        <Button intent={'none'} icon={layerModel.isVisible ? <FaEyeSlash /> : <FaEye  />} onClick={() => dispatch(toggleLayerVisibility(layerId))} />
+        <Popover content={<LayerContextMenu />}>
+          <Button intent={'none'} icon={<FaEllipsisVertical />} />
+        </Popover>
       </div>
     </div>
   )
+}
+
+function LayerContextMenu() {
+  return (
+    <Menu>
+      <MenuItem text={'Derive New Layer'} icon={<FaArrowsSplitUpAndLeft />} />
+    </Menu>
+  );
 }
