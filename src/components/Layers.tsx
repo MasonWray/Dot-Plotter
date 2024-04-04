@@ -3,9 +3,10 @@
 import { LayerModel } from '@/lib/layers/LayerModel';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { toggleLayerCollapse } from '@/redux/slices/layerSlice';
-import { Card, H5, Tree, TreeNodeInfo } from '@blueprintjs/core';
+import { Card, H5, NonIdealState, Tree, TreeNodeInfo } from '@blueprintjs/core';
 import { useCallback, useEffect, useState } from 'react';
 import { LayerPrimaryLabel } from './layers/LayerPrimaryLabel';
+import { FaLayerGroup } from 'react-icons/fa6';
 
 
 function toLayerNode(root: LayerModel, models: LayerModel[]) {
@@ -35,6 +36,14 @@ export function Layers() {
       setContents([tree]);
     }
   }, [root, models]);
+
+  if (!root) {
+    return (
+      <Card>
+        <NonIdealState title={'No Layers to Show'} icon={<FaLayerGroup />} description={'Open a project ot import an image to get started'} />
+      </Card>
+    );
+  }
 
   return (
     <Card>
