@@ -3,7 +3,7 @@ import { setSourceImage } from '@/redux/slices/dataSlice';
 import { addRootFromImage } from '@/redux/slices/layerSlice';
 import { closeAllDialogs } from '@/redux/slices/menuSlice';
 import { setOutputSize } from '@/redux/slices/outputSlice';
-import { Button, Dialog, DialogBody, DialogFooter, FileInput } from '@blueprintjs/core';
+import { Button, Dialog, DialogBody, DialogFooter, FileInput, FormGroup } from '@blueprintjs/core';
 import { ChangeEvent, useState } from 'react';
 
 interface ImageData {
@@ -72,7 +72,11 @@ export function ImportImageDialog() {
   return (
     <Dialog isOpen={isOpen} onClose={handleClose} title={'Import Image'}>
       <DialogBody>
-        <FileInput text={filename ?? 'Chose file...'} onInputChange={handleFileChange} />
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <FormGroup labelFor={'file-input'} label={'Source Image'} inline>
+            <FileInput id={'file-input'} text={filename ?? 'Chose file...'} onInputChange={handleFileChange} />
+          </FormGroup>
+        </div>
       </DialogBody>
       <DialogFooter actions={[
         <Button key={0} text='Cancel' intent={'none'} onClick={handleClose} />,
