@@ -1,15 +1,16 @@
 import { useAppDispatch } from '@/redux/hooks';
 import { openMachineSettingsDialog } from '@/redux/slices/menuSlice';
 import { Menu, MenuItem } from '@blueprintjs/core';
-import { GrConfigure } from "react-icons/gr";
+import { FaGears, FaScrewdriverWrench, FaToolbox } from 'react-icons/fa6';
 
 export function OutputMenu() {
   const dispatch = useAppDispatch();
 
   return (
     <Menu>
-      <MenuItem icon={<GrConfigure />} text='Machine Setup' onClick={() => dispatch(openMachineSettingsDialog())} />
-      <MenuItem icon={'folder-new'} text='Export' disabled />
+      <MenuItem icon={<FaScrewdriverWrench />} text='Output Settings' onClick={() => dispatch(openMachineSettingsDialog())} />
+      <MenuItem icon={<FaGears />} text='Machine Library' disabled />
+      <MenuItem icon={<FaToolbox />} text={'Tool Library'} />
     </Menu>
   );
 }

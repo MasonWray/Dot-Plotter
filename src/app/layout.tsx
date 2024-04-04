@@ -10,6 +10,8 @@ import { MachineSettingsDialog } from '@/components/dialogs/MachineSettingsDialo
 import 'bootstrap/dist/css/bootstrap.css'
 import "@blueprintjs/core/lib/css/blueprint.css"
 import "normalize.css"
+import "./globals.css"
+import { CmykSplitSettingsDialog } from '@/components/derivations/CmykSplit'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -22,6 +24,7 @@ export default function RootLayout({ children, }: { children: React.ReactNode })
             {children}
             <ImportImageDialog />
             <MachineSettingsDialog />
+            <CmykSplitSettingsDialog />
           </body>
         </html>
       </OverlaysProvider>

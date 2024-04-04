@@ -1,99 +1,74 @@
+import ApplicationDataException from '@/defs/ApplicationDataException';
+import { createImageLayerModel } from '@/lib/layers/ImageLayerModel';
+import { LayerModel } from '@/lib/layers/LayerModel';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-
-interface RgbColor {
-    r: number,
-    g: number,
-    b: number
-}
-
-export enum ColorChannel {
-    C, M, Y, K,
-}
-
-export interface LayerData {
-    id: string,
-    name: string,
-    color: RgbColor,
-    channel: ColorChannel
-    raster_visible: boolean,
-    raster: string | undefined,
-    vector_visible: boolean,
-    vector: string | undefined,
-}
+import { RootState } from '../store';
+import { createGroupLayerModel } from '@/lib/layers/GroupLayerModel';
+import { cloneDeep } from 'lodash';
 
 interface LayerState {
-    data: LayerData[]
+    root: string | undefined
+    models: LayerModel[]
 }
 
 const initialState: LayerState = {
-    data: [
-        {
-            id: '48f20491-dddf-4312-abd3-679e2d330223',
-            name: 'Cyan',
-            color: { r: 0, g: 255, b: 255 },
-            channel: ColorChannel.C,
-            raster_visible: true,
-            raster: undefined,
-            vector_visible: false,
-            vector: undefined,
-        },
-        {
-            id: '84d29f71-22cc-43e4-9408-b9780dbc39fe',
-            name: 'Magenta',
-            color: { r: 255, g: 0, b: 255 },
-            channel: ColorChannel.M,
-            raster_visible: true,
-            raster: undefined,
-            vector_visible: false,
-            vector: undefined,
-        },
-        {
-            id: 'e422824a-c9a5-4154-bcb8-75464ae417d0',
-            name: 'Yellow',
-            color: { r: 255, g: 255, b: 0 },
-            channel: ColorChannel.Y,
-            raster_visible: true,
-            raster: undefined,
-            vector_visible: false,
-            vector: undefined,
-        },
-        {
-            id: '6b35b7b8-7047-4ba3-bbf8-ea0c73ef5c21',
-            name: 'Black',
-            color: { r: 0, g: 0, b: 0 },
-            channel: ColorChannel.K,
-            raster_visible: true,
-            raster: undefined,
-            vector_visible: false,
-            vector: undefined,
-        }
-    ]
+    root: undefined,
+    models: []
 }
 
 export const layerSlice = createSlice({
     name: 'layers',
     initialState,
     reducers: {
-        toggleRasterVisibility: (state, action: PayloadAction<number>) => {
-            state.data[action.payload].raster_visible = !state.data[action.payload].raster_visible;
+        addRootFromImage: (state, action: PayloadAction<{ name: string, data: string, width: number, height: number }>) => {
+            const { name, data, width, height } = action.payload;
+            const root = createImageLayerModel(name, width, height, data);
+            state.models.push(root);
+            state.root = root.id;
         },
-        setLayerRaster: (state, action: PayloadAction<{ id: number, data: string }>) => {
-            state.data[action.payload.id].raster = action.payload.data;
+        addRootLayer: (state, action: PayloadAction<LayerModel>) => {
+            state.models.push(action.payload);
+            state.root = action.payload.id;
         },
-        toggleVectorVisibility: (state, action: PayloadAction<number>) => {
-            state.data[action.payload].vector_visible = !state.data[action.payload].vector_visible;
+        addLayerGroup: (state, action: PayloadAction<{ parent: string, name: string, layers: LayerModel[] }>) => {
+            let models = cloneDeep(state.models);
+            let root = cloneDeep(state.root);
+
+            const parentModelIndex = models.findIndex(m => m.id === action.payload.parent);
+            if (parentModelIndex < 0) throw new ApplicationDataException(`Parent ${action.payload.parent} not found`);
+            const group = createGroupLayerModel(action.payload.name, action.payload.parent, action.payload.layers.map(l => l.id));
+            models[parentModelIndex].children.push(group.id);
+            models.push(group);
+            action.payload.layers.forEach(l => {
+                l.parent = group.id;
+                models.push(l);
+            });
+            state.models = models;
+            state.root = models.find(m => m.id === root)?.id;
         },
-        setLayerVector: (state, action: PayloadAction<{ id: number, data: string }>) => {
-            state.data[action.payload.id].vector = action.payload.data;
+        toggleLayerVisibility: (state, action: PayloadAction<string>) => {
+            let model = state.models.find(m => m.id === action.payload);
+            if (!model) throw new ApplicationDataException(`Model ${action.payload} not found`);
+            model.isVisible = !model.isVisible;
         },
+        toggleLayerCollapse: (state, action: PayloadAction<string>) => {
+            let model = state.models.find(m => m.id === action.payload);
+            if (!model) throw new ApplicationDataException(`Model ${action.payload} not found`);
+            model.isExpanded = !model.isExpanded;
+        }
     }
 });
 
 export const {
-    toggleRasterVisibility,
-    setLayerRaster,
-    toggleVectorVisibility,
-    setLayerVector,
+    addRootFromImage,
+    addRootLayer,
+    toggleLayerVisibility,
+    toggleLayerCollapse,
+    addLayerGroup
 } = layerSlice.actions;
+
+export function getLayerById(state: RootState, id: string) {
+    return state.layers.models.find(m => m.id === id);
+}
 
 export default layerSlice.reducer;
