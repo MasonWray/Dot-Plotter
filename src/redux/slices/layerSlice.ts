@@ -4,6 +4,7 @@ import { LayerModel } from '@/lib/layers/LayerModel';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 import { createGroupLayerModel } from '@/lib/layers/GroupLayerModel';
+import { cloneDeep } from 'lodash';
 
 interface LayerState {
     root: LayerModel | undefined
@@ -30,16 +31,20 @@ export const layerSlice = createSlice({
             state.root = action.payload;
         },
         addLayerGroup: (state, action: PayloadAction<{ parent: string, name: string, layers: LayerModel[] }>) => {
-            const parentModelIndex = state.models.findIndex(m => m.id === action.payload.parent);
+            let models = cloneDeep(state.models);
+            let root = cloneDeep(state.root);
+
+            const parentModelIndex = models.findIndex(m => m.id === action.payload.parent);
             if (parentModelIndex < 0) throw new ApplicationDataException(`Parent ${action.payload.parent} not found`);
-            let parentModel = state.models[parentModelIndex];
             const group = createGroupLayerModel(action.payload.name, action.payload.parent, action.payload.layers.map(l => l.id));
-            state.models[parentModelIndex] = parentModel;
-            state.models.push(group);
+            models[parentModelIndex].children.push(group.id);
+            models.push(group);
             action.payload.layers.forEach(l => {
                 l.parent = group.id;
-                state.models.push(l);
+                models.push(l);
             });
+            state.models = models;
+            state.root = models.find(m => m.id === root?.id);
         },
         toggleLayerVisibility: (state, action: PayloadAction<string>) => {
             let model = state.models.find(m => m.id === action.payload);
