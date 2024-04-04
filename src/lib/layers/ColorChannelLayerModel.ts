@@ -1,6 +1,6 @@
 import { uniqueId } from '@blueprintjs/core/lib/esm/common/utils';
-import { LayerModel, LayerType, RgbColor, RgbaColor } from './LayerModel';
 import { ImageLayerModel } from './ImageLayerModel';
+import { LayerType, RgbColor, RgbaColor } from './LayerModel';
 
 export const ColorCyan: RgbaColor = { r: 0, g: 255, b: 255, a: 255 }
 export const ColorMagenta: RgbaColor = { r: 255, g: 0, b: 255, a: 255 }
@@ -19,6 +19,7 @@ export function createColorChannelLayerModel(name: string, color: RgbColor, widt
     width,
     height,
     isVisible: true,
+    isExpanded: true,
     parent: undefined,
     children: [],
     data,

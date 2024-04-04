@@ -29,16 +29,12 @@ export const layerSlice = createSlice({
             state.models.push(action.payload);
             state.root = action.payload;
         },
-        addChildLayer: (state, action: PayloadAction<{ model: LayerModel, parent: string }>) => {
-            let parentModel = state.models.find(m => m.id === action.payload.parent);
-            if (!parentModel) throw new ApplicationDataException(`Parent ${action.payload.parent} not found`);
-            state.models.push(action.payload.model);
-            parentModel.children.push(action.payload.model.id);
-        },
         addLayerGroup: (state, action: PayloadAction<{ parent: string, name: string, layers: LayerModel[] }>) => {
-            let parentModel = state.models.find(m => m.id === action.payload.parent);
-            if (!parentModel) throw new ApplicationDataException(`Parent ${action.payload.parent} not found`);
+            const parentModelIndex = state.models.findIndex(m => m.id === action.payload.parent);
+            if (parentModelIndex < 0) throw new ApplicationDataException(`Parent ${action.payload.parent} not found`);
+            let parentModel = state.models[parentModelIndex];
             const group = createGroupLayerModel(action.payload.name, action.payload.parent, action.payload.layers.map(l => l.id));
+            state.models[parentModelIndex] = parentModel;
             state.models.push(group);
             action.payload.layers.forEach(l => {
                 l.parent = group.id;
@@ -49,6 +45,11 @@ export const layerSlice = createSlice({
             let model = state.models.find(m => m.id === action.payload);
             if (!model) throw new ApplicationDataException(`Model ${action.payload} not found`);
             model.isVisible = !model.isVisible;
+        },
+        toggleLayerCollapse: (state, action: PayloadAction<string>) => {
+            let model = state.models.find(m => m.id === action.payload);
+            if (!model) throw new ApplicationDataException(`Model ${action.payload} not found`);
+            model.isExpanded = !model.isExpanded;
         }
     }
 });
@@ -57,6 +58,7 @@ export const {
     addRootFromImage,
     addRootLayer,
     toggleLayerVisibility,
+    toggleLayerCollapse,
     addLayerGroup
 } = layerSlice.actions;
 

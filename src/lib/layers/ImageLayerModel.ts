@@ -15,6 +15,7 @@ export function createImageLayerModel(name: string, width: number, height: numbe
     width,
     height,
     isVisible: true,
+    isExpanded: true,
     parent: undefined,
     children: [],
     data

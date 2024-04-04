@@ -9,6 +9,7 @@ export function createGroupLayerModel(name: string, parent?: string, children: s
     type: LayerType.GroupLayerModel,
     name,
     isVisible: true,
+    isExpanded: true,
     parent,
     children,
   }

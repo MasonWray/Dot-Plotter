@@ -13,6 +13,7 @@ export interface LayerModel {
   type: LayerType,
   name: string,
   isVisible: boolean,
+  isExpanded: boolean,
   parent: string | undefined,
   children: string[]
 }
