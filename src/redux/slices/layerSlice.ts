@@ -7,7 +7,7 @@ import { createGroupLayerModel } from '@/lib/layers/GroupLayerModel';
 import { cloneDeep } from 'lodash';
 
 interface LayerState {
-    root: LayerModel | undefined
+    root: string | undefined
     models: LayerModel[]
 }
 
@@ -24,11 +24,11 @@ export const layerSlice = createSlice({
             const { name, data, width, height } = action.payload;
             const root = createImageLayerModel(name, width, height, data);
             state.models.push(root);
-            state.root = root;
+            state.root = root.id;
         },
         addRootLayer: (state, action: PayloadAction<LayerModel>) => {
             state.models.push(action.payload);
-            state.root = action.payload;
+            state.root = action.payload.id;
         },
         addLayerGroup: (state, action: PayloadAction<{ parent: string, name: string, layers: LayerModel[] }>) => {
             let models = cloneDeep(state.models);
@@ -44,7 +44,7 @@ export const layerSlice = createSlice({
                 models.push(l);
             });
             state.models = models;
-            state.root = models.find(m => m.id === root?.id);
+            state.root = models.find(m => m.id === root)?.id;
         },
         toggleLayerVisibility: (state, action: PayloadAction<string>) => {
             let model = state.models.find(m => m.id === action.payload);
