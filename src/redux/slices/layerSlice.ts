@@ -3,6 +3,7 @@ import { createImageLayerModel } from '@/lib/layers/ImageLayerModel';
 import { LayerModel } from '@/lib/layers/LayerModel';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../store';
+import { createGroupLayerModel } from '@/lib/layers/GroupLayerModel';
 
 interface LayerState {
     root: LayerModel | undefined
@@ -34,6 +35,16 @@ export const layerSlice = createSlice({
             state.models.push(action.payload.model);
             parentModel.children.push(action.payload.model.id);
         },
+        addLayerGroup: (state, action: PayloadAction<{ parent: string, name: string, layers: LayerModel[] }>) => {
+            let parentModel = state.models.find(m => m.id === action.payload.parent);
+            if (!parentModel) throw new ApplicationDataException(`Parent ${action.payload.parent} not found`);
+            const group = createGroupLayerModel(action.payload.name, action.payload.parent, action.payload.layers.map(l => l.id));
+            state.models.push(group);
+            action.payload.layers.forEach(l => {
+                l.parent = group.id;
+                state.models.push(l);
+            });
+        },
         toggleLayerVisibility: (state, action: PayloadAction<string>) => {
             let model = state.models.find(m => m.id === action.payload);
             if (!model) throw new ApplicationDataException(`Model ${action.payload} not found`);
@@ -45,7 +56,8 @@ export const layerSlice = createSlice({
 export const {
     addRootFromImage,
     addRootLayer,
-    toggleLayerVisibility
+    toggleLayerVisibility,
+    addLayerGroup
 } = layerSlice.actions;
 
 export function getLayerById(state: RootState, id: string) {

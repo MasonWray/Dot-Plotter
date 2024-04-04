@@ -21,6 +21,8 @@ export function Layers() {
   const { root, models } = useAppSelector(state => state.layers);
   const [contents, setContents] = useState<TreeNodeInfo<LayerModel>[]>([]);
 
+  console.log(models)
+
   useEffect(() => {
     setContents(toLayerNode(root));
   }, [root, models]);
