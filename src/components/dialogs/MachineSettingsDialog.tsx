@@ -41,37 +41,44 @@ export function MachineSettingsDialog() {
   }
 
   return (
-    <Dialog isOpen={isOpen} onClose={handleClose} title={'Machine Setup'}>
+    <Dialog isOpen={isOpen} onClose={handleClose} title={'Machine Setup'} style={{ width: 'auto' }}>
       <DialogBody>
-        <div style={{ flexDirection: 'row' }}>
-          <FormGroup labelFor={'stock-width'} label={'Stock Width'} labelInfo={'(mm)'}>
+        <div style={{ display: 'flex', justifyContent: 'center', columnGap: 12 }}>
+          <FormGroup labelFor={'stock-width'} label={'Stock Width'} labelInfo={'(mm)'} fill>
             <NumericInput id={'stock-width'} disabled={!(imageWidth > 0)} value={settings.stockWidth} onValueChange={(n, s) => { handleWidthChange(s) }} />
           </FormGroup>
-          <FormGroup labelFor={'stock-height'} label={'Stock Height'} labelInfo={'(mm)'}>
+          <FormGroup labelFor={'stock-height'} label={'Stock Height'} labelInfo={'(mm)'} fill>
             <NumericInput id={'stock-height'} disabled={!(imageHeight > 0)} value={settings.stockHeight} onValueChange={(n, s) => { handleHeightChange(s) }} />
+          </FormGroup>
+        </div>
+
+        <div style={{ display: 'flex', justifyContent: 'center', columnGap: 12 }}>
+          <FormGroup labelFor={'travel-feedrate'} label={'Travel Feedrate'} labelInfo={'(mm/s)'}>
+            <NumericInput id={'travel-feedrate'} step={50} value={settings.feedrateTravel} onValueChange={(n, s) => dispatch(setFeedrateTravel(parseFloat(s)))} />
+          </FormGroup>
+          <FormGroup labelFor={'plunge-feedrate'} label={'Plunge Feedrate'} labelInfo={'(mm/s)'}>
+            <NumericInput id={'plunge-feedrate'} step={50} value={settings.feedratePlunge} onValueChange={(n, s) => dispatch(setFeedratePlunge(parseFloat(s)))} />
+          </FormGroup>
+        </div>
+
+        <div style={{ display: 'flex', justifyContent: 'center', columnGap: 12 }}>
+          <FormGroup labelFor={'travel-height'} label={'Travel Height'} labelInfo={'(mm)'}>
+            <NumericInput id={'travel-height'} step={0.1} value={settings.heightTravel} onValueChange={(n, s) => dispatch(setHeightTravel(parseFloat(s)))} />
+          </FormGroup>
+          <FormGroup labelFor={'plunge-height'} label={'Plunge Height'} labelInfo={'(mm)'}>
+            <NumericInput id={'plunge-feedrate'} step={0.1} value={settings.heightPlunge} onValueChange={(n, s) => dispatch(setHeightPlunge(parseFloat(s)))} />
           </FormGroup>
         </div>
 
         <FormGroup labelFor={'tool-diameter'} label={'Tool Diameter'} labelInfo={'(mm)'}>
           <NumericInput id={'tool-diameter'} step={0.1} value={settings.toolDiameter} onValueChange={(n, s) => dispatch(setToolDiameter(parseFloat(s)))} />
         </FormGroup>
-        <FormGroup labelFor={'travel-feedrate'} label={'Travel Feedrate'} labelInfo={'(mm/s)'}>
-          <NumericInput id={'travel-feedrate'} step={50} value={settings.feedrateTravel} onValueChange={(n, s) => dispatch(setFeedrateTravel(parseFloat(s)))} />
-        </FormGroup>
-        <FormGroup labelFor={'plunge-feedrate'} label={'Plunge Feedrate'} labelInfo={'(mm/s)'}>
-          <NumericInput id={'plunge-feedrate'} step={50} value={settings.feedratePlunge} onValueChange={(n, s) => dispatch(setFeedratePlunge(parseFloat(s)))} />
-        </FormGroup>
-        <FormGroup labelFor={'travel-height'} label={'travel Height'} labelInfo={'(mm/s)'}>
-          <NumericInput id={'travel-height'} step={0.1} value={settings.heightTravel} onValueChange={(n, s) => dispatch(setHeightTravel(parseFloat(s)))} />
-        </FormGroup>
-        <FormGroup labelFor={'plunge-height'} label={'Plunge Height'} labelInfo={'(mm/s)'}>
-          <NumericInput id={'plunge-feedrate'} step={0.1} value={settings.heightPlunge} onValueChange={(n, s) => dispatch(setHeightPlunge(parseFloat(s)))} />
-        </FormGroup>
+
       </DialogBody>
       <DialogFooter actions={[
         <Button key={0} text='Refresh' intent={'none'} onClick={handleRefresh} />,
         <Button key={1} text='Download' intent={'primary'} onClick={handleDownload} />
       ]} />
-    </Dialog>
+    </Dialog >
   )
 }

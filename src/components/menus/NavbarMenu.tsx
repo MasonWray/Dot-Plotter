@@ -1,7 +1,7 @@
 
 import { FileMenu } from '@/components/menus/FileMenu'
 import { Button, Navbar, Popover } from '@blueprintjs/core'
-import { OutputMenu } from './OutputMenu'
+import { SetupMenu } from './SetupMenu'
 
 export function NavbarMenu() {
 
@@ -13,12 +13,12 @@ export function NavbarMenu() {
         <Popover content={<FileMenu />}>
           <Button className={'bp5-minimal'} text={'File'} />
         </Popover>
-        <Popover content={<OutputMenu />}>
-          <Button className={'bp5-minimal'} text={'Output'}/>
+        <Popover content={<SetupMenu />}>
+          <Button className={'bp5-minimal'} text={'Setup'} />
         </Popover>
       </Navbar.Group>
       <Navbar.Group align={'right'}>
-        <Button icon={'git-branch'} text={'View on GitHub'} onClick={() => window.open('https://github.com/MasonWray/Dot-Plotter', '_blank')}/>
+        <Button icon={'git-branch'} text={'View on GitHub'} onClick={() => window.open('https://github.com/MasonWray/Dot-Plotter', '_blank')} />
       </Navbar.Group>
     </Navbar>
   )
