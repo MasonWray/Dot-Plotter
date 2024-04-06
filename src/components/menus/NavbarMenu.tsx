@@ -2,6 +2,7 @@
 import { FileMenu } from '@/components/menus/FileMenu'
 import { Button, Navbar, Popover } from '@blueprintjs/core'
 import { SetupMenu } from './SetupMenu'
+import { FaGithub } from 'react-icons/fa6'
 
 export function NavbarMenu() {
 
@@ -18,7 +19,7 @@ export function NavbarMenu() {
         </Popover>
       </Navbar.Group>
       <Navbar.Group align={'right'}>
-        <Button icon={'git-branch'} text={'View on GitHub'} onClick={() => window.open('https://github.com/MasonWray/Dot-Plotter', '_blank')} />
+        <Button icon={<FaGithub />} text={'View on GitHub'} onClick={() => window.open('https://github.com/MasonWray/Dot-Plotter', '_blank')} />
       </Navbar.Group>
     </Navbar>
   )
