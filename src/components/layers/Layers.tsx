@@ -5,10 +5,9 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { toggleLayerCollapse } from '@/redux/slices/layerSlice';
 import { Card, H5, NonIdealState, Tree, TreeNodeInfo } from '@blueprintjs/core';
 import { useCallback, useEffect, useState } from 'react';
-import { LayerPrimaryLabel } from './layers/LayerPrimaryLabel';
+import { LayerTreeLabel } from './LayerTreeLabel';
 import { FaLayerGroup } from 'react-icons/fa6';
 import ApplicationDataException from '@/defs/ApplicationDataException';
-
 
 function toLayerNode(rootId: string, models: LayerModel[]) {
   const root = models.find(m => m.id === rootId);
@@ -16,15 +15,14 @@ function toLayerNode(rootId: string, models: LayerModel[]) {
   let node: TreeNodeInfo<LayerModel> = {
     id: root.id,
     hasCaret: root.children.length > 0,
-    label: <LayerPrimaryLabel layerId={root.id} />,
+    label: <LayerTreeLabel layerId={root.id} />,
     isExpanded: root.isExpanded,
     childNodes: models.filter(m => m.parent === root.id).map(c => toLayerNode(c.id, models))
   };
   return node;
 }
 
-
-export function Layers() {
+export function LayersTree() {
   const dispatch = useAppDispatch();
   const { root, models } = useAppSelector(state => state.layers);
   const [contents, setContents] = useState<TreeNodeInfo<LayerModel>[]>([]);

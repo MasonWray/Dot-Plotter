@@ -1,11 +1,12 @@
 'use client'
 
-import { Layers } from '@/components/Layers'
 import { Preview } from '@/components/Preview'
 import { CmykSplitSettingsDialog } from '@/components/derivations/CmykSplit'
 import { ImportImageDialog } from '@/components/dialogs/ImportImageDialog'
 import { MachineSettingsDialog } from '@/components/dialogs/MachineSettingsDialog'
+import { LayersTree } from '@/components/layers/Layers'
 import { NavbarMenu } from '@/components/menus/NavbarMenu'
+import { TaskQueuePanel } from '@/components/queue/TaskQueuePanel'
 import { store } from '@/redux/store'
 import { OverlaysProvider } from '@blueprintjs/core'
 import { Inter } from 'next/font/google'
@@ -38,11 +39,14 @@ function Body() {
           <div className="row">
             {/* Left Sidebar */}
             <div className="col-sm-3">
-              <Layers />
+              <LayersTree />
             </div>
             {/* Preview Area */}
             <div className="col-sm-6">
               <Preview />
+            </div>
+            <div className='col-sm-3'>
+              <TaskQueuePanel />
             </div>
           </div>
         </div>

@@ -4,7 +4,7 @@ import { openDeriveCmykSplitSettings } from '@/redux/slices/menuSlice';
 import { Button, Menu, MenuItem, Popover } from '@blueprintjs/core';
 import { FaArrowsSplitUpAndLeft, FaEllipsisVertical, FaEye, FaEyeSlash, FaPalette, FaTrashCan } from "react-icons/fa6";
 
-export function LayerPrimaryLabel({ layerId }: { layerId: string }) {
+export function LayerTreeLabel({ layerId }: { layerId: string }) {
   const dispatch = useAppDispatch();
   const layerModel = useAppSelector(state => getLayerById(state, layerId));
 
