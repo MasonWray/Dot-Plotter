@@ -7,7 +7,7 @@ import { useRef, useState } from 'react';
 export function MachineSettingsDialog() {
   const dispatch = useAppDispatch();
   const settings = useAppSelector(state => state.output);
-  const { imageHeight, imageWidth } = useAppSelector(state => state.data.sourceImage) ?? { imageHeight: 0, imageWidth: 0 };
+  const { imageHeight, imageWidth } = { imageHeight: 0, imageWidth: 0 };
   const isOpen = useAppSelector(state => state.menus.isMachineSettingsDialogOpen);
   const download = useRef<HTMLAnchorElement>(null);
   const [pkg, setPkg] = useState();

@@ -1,27 +1,19 @@
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { setSourceImage } from '@/redux/slices/dataSlice';
 import { addRootFromImage } from '@/redux/slices/layerSlice';
 import { closeAllDialogs } from '@/redux/slices/menuSlice';
-import { setOutputSize } from '@/redux/slices/outputSlice';
 import { Button, Dialog, DialogBody, DialogFooter, FileInput, FormGroup } from '@blueprintjs/core';
 import { ChangeEvent, useState } from 'react';
 
 interface ImageData {
-  source: {
-    data: string,
-    w: number,
-    h: number
-  },
-  output: {
-    w: number,
-    h: number
-  }
+  name: string,
+  data: string,
+  w: number,
+  h: number
 }
 
 export function ImportImageDialog() {
   const dispatch = useAppDispatch();
   const isOpen = useAppSelector(state => state.menus.isImportImageDialogOpen);
-  const [filename, setFilename] = useState<string | undefined>();
   const [imageData, setImageData] = useState<ImageData | undefined>();
 
   function handleClose() {
@@ -31,40 +23,33 @@ export function ImportImageDialog() {
   function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
     if (!e.target.files) { return; }
     if (e.target.files.length < 1) { return; }
-    const fname = e.target.files[0].name ?? '';
-    setFilename(fname);
+    const filename = e.target.files[0].name ?? '';
 
     let fr = new FileReader();
     let img = new Image();
 
     fr.onload = () => {
       if (!fr.result) { return; }
-      img.src = `${fr.result}`;
       img.onload = () => {
-        dispatch(addRootFromImage({ name: fname, data: `${fr.result}`, width: img.width, height: img.height }));
+
         setImageData({
-          source: {
-            data: `${fr.result}`,
-            w: img.width,
-            h: img.height
-          },
-          output: {
-            w: img.width / 20,
-            h: img.height / 20
-          }
+          name: filename,
+          data: `${fr.result}`,
+          w: img.width,
+          h: img.height
         });
       }
       img.onerror = (e) => {
         setImageData(undefined);
       }
+      img.src = `${fr.result}`;
     }
     fr.readAsDataURL(e.target.files[0])
   }
 
   function handleImportClick() {
     if (imageData) {
-      dispatch(setSourceImage(imageData.source));
-      dispatch(setOutputSize(imageData.output));
+      dispatch(addRootFromImage({ name: imageData.name, data: imageData.data, width: imageData.w, height: imageData.h }));
       dispatch(closeAllDialogs());
     }
   }
@@ -74,7 +59,7 @@ export function ImportImageDialog() {
       <DialogBody>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <FormGroup labelFor={'file-input'} label={'Source Image'} inline>
-            <FileInput id={'file-input'} text={filename ?? 'Chose file...'} onInputChange={handleFileChange} />
+            <FileInput id={'file-input'} text={imageData?.name ?? 'Chose file...'} onInputChange={handleFileChange} />
           </FormGroup>
         </div>
       </DialogBody>

@@ -1,16 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
-import dataSlice from './slices/dataSlice';
 import layerSlice from './slices/layerSlice';
 import menuSlice from './slices/menuSlice';
 import outputSlice from './slices/outputSlice';
 
 export const store = configureStore({
-    reducer: {
-        data: dataSlice,
-        layers: layerSlice,
-        menus: menuSlice,
-        output: outputSlice,
-    }
+  reducer: {
+    layers: layerSlice,
+    menus: menuSlice,
+    output: outputSlice,
+  }
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

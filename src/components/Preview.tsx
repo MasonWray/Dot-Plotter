@@ -10,7 +10,7 @@ export function Preview() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // const layers = useAppSelector(state => state.layers.data);
-  const imageData = useAppSelector(state => state.data.sourceImage);
+  // const imageData = useAppSelector(state => state.data.sourceImage);
   const setup = useAppSelector(state => state.output);
 
   const [size, setSize] = useState({ w: 0, h: 0 });
