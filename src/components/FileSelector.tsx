@@ -1,35 +1,43 @@
-'use client'
-
-import { useAppDispatch } from '@/redux/hooks';
-import { setSourceImage } from '@/redux/slices/dataSlice';
-import { ChangeEvent } from 'react';
+import { useRef } from 'react';
+import { useAppStore } from '../state/store';
 
 export function FileSelector() {
-    const dispatch = useAppDispatch();
+  const input = useRef<HTMLInputElement>(null);
+  const source = useAppStore((s) => s.source);
+  const busy = useAppStore((s) => s.status.kind === 'busy');
+  const loadImage = useAppStore((s) => s.loadImage);
 
-    function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
-        if (!e.target.files) { return; }
-        if (e.target.files.length < 1) { return; }
+  const scaled = source && (source.width !== source.originalWidth || source.height !== source.originalHeight);
 
-        let fr = new FileReader();
-        let img = new Image();
-
-        fr.onload = () => {
-            if (!fr.result) { return; }
-            img.src = `${fr.result}`;
-            img.onload = () => dispatch(setSourceImage({ data: `${fr.result}`, w: img.width, h: img.height }));
-        }
-        fr.readAsDataURL(e.target.files[0])
-    }
-
-    return (
-        <div className="card mb-4">
-            <div className="card-header">File Selector</div>
-            <div className="card-body">
-                <div className="form-group">
-                    <input type="file" className="form-control-file" onChange={handleFileChange} />
-                </div>
-            </div>
-        </div>
-    );
+  return (
+    <section className="panel">
+      <h2>Image</h2>
+      <div className="panel-body">
+        <button type="button" className="button primary" disabled={busy} onClick={() => input.current?.click()}>
+          {source ? 'Open another image…' : 'Open image…'}
+        </button>
+        <input
+          ref={input}
+          type="file"
+          accept="image/*"
+          hidden
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) void loadImage(file);
+            e.target.value = '';
+          }}
+        />
+        {source ? (
+          <p className="meta">
+            <span className="filename" title={source.name}>{source.name}</span>
+            <br />
+            {source.originalWidth} × {source.originalHeight} px
+            {scaled && ` (working at ${source.width} × ${source.height})`}
+          </p>
+        ) : (
+          <p className="meta">Or drop an image anywhere on the page.</p>
+        )}
+      </div>
+    </section>
+  );
 }

@@ -1,71 +1,65 @@
-'use client'
+import { useEffect, useRef } from 'react';
+import { CHANNELS } from '../core/types';
+import { useAppStore } from '../state/store';
 
-import { useAppSelector } from '@/redux/hooks';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+/** Long side of the preview canvas's backing store, in device pixels. */
+const PREVIEW_RESOLUTION = 2048;
 
 export function Preview() {
-    const previewRef = useRef<HTMLDivElement>(null);
-    const canvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const source = useAppStore((s) => s.source);
+  const layers = useAppStore((s) => s.layers);
+  const output = useAppStore((s) => s.output);
+  const status = useAppStore((s) => s.status);
 
-    const layers = useAppSelector(state => state.layers.data);
-    const settings = useAppSelector(state => state.output);
-    const imageData = useAppSelector(state => state.data.imageData);
+  const aspect = output ? output.grid.cols / output.grid.rows : source ? source.width / source.height : 1;
 
-    const [size, setSize] = useState({ w: 0, h: 0 });
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext('2d');
+    if (!canvas || !ctx || !source) return;
 
-    useLayoutEffect(() => {
-        function updateDims() {
-            if (previewRef.current) {
-                setSize({ w: previewRef.current.offsetWidth, h: previewRef.current.offsetHeight });
-            }
-        }
+    canvas.width = Math.round(aspect >= 1 ? PREVIEW_RESOLUTION : PREVIEW_RESOLUTION * aspect);
+    canvas.height = Math.round(aspect >= 1 ? PREVIEW_RESOLUTION / aspect : PREVIEW_RESOLUTION);
 
-        window.addEventListener('resize', updateDims);
-        updateDims();
-        return () => window.removeEventListener('resize', updateDims);
-    }, [previewRef]);
+    // Paper, then inks multiplied on top, which is roughly how overlapping inks mix.
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.globalCompositeOperation = 'multiply';
+    ctx.imageSmoothingQuality = 'high';
 
-    useEffect(() => {
-        const canvas = canvasRef.current;
-        if (!canvas) { return; }
-        const context = canvas.getContext("2d");
-        if (!context || !imageData || !previewRef.current) { return; }
+    for (const ch of CHANNELS) {
+      const layer = layers[ch];
+      if (layer.rasterVisible && layer.raster) ctx.drawImage(layer.raster, 0, 0, canvas.width, canvas.height);
+    }
+    for (const ch of CHANNELS) {
+      const layer = layers[ch];
+      if (layer.vectorVisible && layer.vector) ctx.drawImage(layer.vector, 0, 0, canvas.width, canvas.height);
+    }
+  }, [source, layers, aspect]);
 
-        // Set canvas size based on preview window width and source size
-        canvas.width = Math.round(previewRef.current.getBoundingClientRect().width - 20);
-        canvas.height = Math.round(canvas.width * settings.sourceHeight / settings.sourceWidth);
-
-        // Draw raster previews
-        layers.forEach((layer) => {
-            if (layer.raster && layer.raster_visible) {
-                context.save()
-                // TODO determine layer.raster type 
-                // context.scale(canvas.width / layer.raster.width, canvas.height / layer.raster.height)
-                context.drawImage(layer.raster, 0, 0);
-                context.restore()
-            }
-        })
-
-        // Draw vector Layers
-        layers.forEach((layer) => {
-            if (layer.vector && layer.vector_visible) {
-                context.save()
-                // TODO determine layer.vector type 
-                // context.scale(canvas.width / layer.vector.width, canvas.height / layer.vector.height)
-                context.drawImage(layer.vector, 0, 0);
-                context.restore()
-            }
-        })
-    }, [settings.sourceWidth, settings.sourceHeight, imageData, layers, size]);
-
-    return (
-        <div className="card" ref={previewRef}>
-            <div className="card-header">
-                {"Preview"}
-            </div>
-            <div className="card-body d-flex justify-content-center">
-                <canvas ref={canvasRef} ></canvas>
-            </div>
-        </div >
-    )
+  return (
+    <section className="panel preview">
+      <h2>
+        Preview
+        {status.kind === 'busy' && <span className="status busy" role="status">{status.message}…</span>}
+      </h2>
+      <div className="preview-stage">
+        {source ? (
+          <canvas ref={canvasRef} style={{ aspectRatio: String(aspect) }} aria-label="Preview of the plotted image" />
+        ) : (
+          <div className="empty">
+            <img src="./logo192.png" alt="" width={96} height={96} />
+            <p>Open an image to split it into cyan, magenta, yellow and black dots.</p>
+          </div>
+        )}
+      </div>
+      {status.kind === 'error' && (
+        <p className="status error" role="alert">
+          {status.message}
+        </p>
+      )}
+    </section>
+  );
 }
