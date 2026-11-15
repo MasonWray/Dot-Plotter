@@ -8,6 +8,8 @@ export interface LayerState {
   vectorVisible: boolean;
   /** Tinted ink-coverage image, made when an image is loaded. */
   raster?: ImageBitmap;
+  /** Average ink coverage, 0-1, from the loaded image. */
+  coverage?: number;
   /** Dot preview from the last generate. */
   vector?: ImageBitmap;
   dots?: number;
@@ -86,7 +88,10 @@ export const useAppStore = create<AppState>()((set, get) => ({
 
       releaseOutput(get(), false);
       const layers = initialLayers();
-      for (const ch of CHANNELS) layers[ch].raster = result.rasters[ch];
+      for (const ch of CHANNELS) {
+        layers[ch].raster = result.rasters[ch];
+        layers[ch].coverage = result.coverage[ch];
+      }
 
       const { settings } = get();
       set({

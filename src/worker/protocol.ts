@@ -18,6 +18,8 @@ export interface LoadResult {
   originalWidth: number;
   originalHeight: number;
   rasters: Record<Channel, ImageBitmap>;
+  /** Average ink coverage of each channel, 0-1. */
+  coverage: Record<Channel, number>;
 }
 
 export interface GenerateResult {

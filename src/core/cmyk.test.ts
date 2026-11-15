@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { rgbToCmyk, separateCmyk } from './cmyk';
+import { averageCoverage, rgbToCmyk, separateCmyk } from './cmyk';
 
 describe('rgbToCmyk', () => {
   it('maps white to no ink', () => {
@@ -51,5 +51,16 @@ describe('separateCmyk', () => {
 
   it('rejects a buffer that is too short', () => {
     expect(() => separateCmyk(new Uint8ClampedArray(4), 2, 1)).toThrow(RangeError);
+  });
+});
+
+describe('averageCoverage', () => {
+  it('is 0 for an empty plane', () => {
+    expect(averageCoverage(new Uint8Array(0))).toBe(0);
+  });
+
+  it('averages coverage as a fraction of solid ink', () => {
+    expect(averageCoverage(new Uint8Array([0, 255]))).toBe(0.5);
+    expect(averageCoverage(new Uint8Array([255, 255, 255]))).toBe(1);
   });
 });

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { FileSelector } from './components/FileSelector';
+import { BrandMark } from './components/Marks';
 import { LayerList } from './components/LayerList';
 import { OutputSettings } from './components/OutputSettings';
 import { Preview } from './components/Preview';
@@ -42,28 +43,40 @@ function useFileDrop() {
 
 export function App() {
   const dragging = useFileDrop();
+  const status = useAppStore((s) => s.status);
+  const sourceName = useAppStore((s) => s.source?.name);
+
+  const classes = ['app', dragging && 'dragging', status.kind === 'busy' && 'busy'].filter(Boolean).join(' ');
 
   return (
-    <div className={dragging ? 'app dragging' : 'app'}>
+    <div className={classes}>
       <header className="topbar">
         <div className="brand">
-          <img src="./logo192.png" alt="" width={28} height={28} />
+          <BrandMark />
           <h1>Dot Plotter</h1>
           <span className="version">v{__APP_VERSION__}</span>
         </div>
-        <a className="button subtle" href="https://github.com/MasonWray/Dot-Plotter" target="_blank" rel="noreferrer">
-          View on GitHub
+        {sourceName && (
+          <span className="doc-tab" title={sourceName}>
+            {sourceName}
+          </span>
+        )}
+        <span className={`topbar-status ${status.kind}`} role="status">
+          {status.kind === 'busy' ? `${status.message}…` : status.kind === 'error' ? 'Error' : 'Ready'}
+        </span>
+        <a className="button ghost" href="https://github.com/MasonWray/Dot-Plotter" target="_blank" rel="noreferrer">
+          GitHub
         </a>
       </header>
       <main className="workspace">
-        <div className="sidebar">
+        <aside className="sidebar left">
           <FileSelector />
           <LayerList />
-        </div>
+        </aside>
         <Preview />
-        <div className="sidebar">
+        <aside className="sidebar right">
           <OutputSettings />
-        </div>
+        </aside>
       </main>
     </div>
   );

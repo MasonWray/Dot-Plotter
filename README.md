@@ -8,10 +8,10 @@ Dot Plotter is a GCODE toolpath generator for CMYK stippling. It splits an image
 
 - **Image** - Start by opening an image, or drop one anywhere on the page. Any format your browser can display works. Images larger than 4096 px on a side are scaled down for processing.
 
-- **Layers** - The image is split into four ink layers. **Image** shows a layer's ink coverage; **Dots** shows the dots from the last generate. Visibility only affects the preview, not the output files.
+- **Layers** - The image is split into four ink layers. **Image** shows a layer's ink coverage; **Dots** shows the dots from the last generate. The bar under each layer shows how much of the sheet that ink covers. Visibility only affects the preview, not the output files.
   **Note:** RGB to CMYK conversion is done mathematically. ICC colour profiles are not supported yet.
 
-- **Preview** - Shows the visible layers multiplied onto white paper, roughly how overlapping inks mix.
+- **Preview** - Shows the visible layers multiplied onto white paper, roughly how overlapping inks mix. The rulers and the status bar show positions in mm, with machine Y = 0 at the bottom edge of the sheet.
 
 - **Output**
   - **Stock Width/Height** - The size of the sheet you plan to plot on, in mm. The two are linked to keep the image's aspect ratio.
