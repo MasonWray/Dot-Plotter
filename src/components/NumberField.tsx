@@ -22,27 +22,32 @@ export function NumberField({ label, unit, value, min = 0, step, disabled, onCha
 
   return (
     <div className="field">
-      <label htmlFor={id}>
-        {label}
-        {unit && <span className="unit"> ({unit})</span>}
-      </label>
-      <input
-        id={id}
-        type="number"
-        inputMode="decimal"
-        min={min}
-        step={step}
-        disabled={disabled}
-        aria-invalid={invalid || undefined}
-        value={draft ?? String(value)}
-        onChange={(e) => {
-          const text = e.target.value;
-          setDraft(text);
-          const n = Number(text);
-          if (text.trim() !== '' && Number.isFinite(n) && n > min) onChange(n);
-        }}
-        onBlur={() => setDraft(null)}
-      />
+      <label htmlFor={id}>{label}</label>
+      <div className="input-wrap">
+        <input
+          id={id}
+          type="number"
+          inputMode="decimal"
+          min={min}
+          step={step}
+          disabled={disabled}
+          aria-invalid={invalid || undefined}
+          aria-describedby={unit ? `${id}-unit` : undefined}
+          value={draft ?? String(value)}
+          onChange={(e) => {
+            const text = e.target.value;
+            setDraft(text);
+            const n = Number(text);
+            if (text.trim() !== '' && Number.isFinite(n) && n > min) onChange(n);
+          }}
+          onBlur={() => setDraft(null)}
+        />
+        {unit && (
+          <span className="unit" id={`${id}-unit`}>
+            {unit}
+          </span>
+        )}
+      </div>
     </div>
   );
 }

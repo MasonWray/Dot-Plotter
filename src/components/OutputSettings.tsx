@@ -17,11 +17,10 @@ export function OutputSettings() {
   const downloadName = `${source?.name.replace(/\.[^.]+$/, '') ?? 'dot-plotter'}-gcode.zip`;
 
   return (
-    <section className="panel">
-      <h2>Output</h2>
-      <div className="panel-body">
-        <fieldset>
-          <legend>Stock</legend>
+    <div className="output">
+      <section className="section">
+        <h2 className="section-head">Stock</h2>
+        <div className="section-body">
           <NumberField label="Width" unit="mm" value={settings.stockWidth} onChange={setStockWidth} disabled={busy} />
           <NumberField label="Height" unit="mm" value={settings.stockHeight} onChange={setStockHeight} disabled={busy} />
           <NumberField
@@ -32,14 +31,19 @@ export function OutputSettings() {
             onChange={(v) => setSetting('toolDiameter', v)}
             disabled={busy}
           />
-          <p className={tooLarge ? 'meta warning' : 'meta'}>
-            {grid.cols.toLocaleString()} × {grid.rows.toLocaleString()} dot grid
-            {tooLarge && ' is too large. Use a bigger tool or smaller stock.'}
+          <p className={tooLarge ? 'readout warning' : 'readout'}>
+            Dot grid
+            <span className="mono">
+              {grid.cols.toLocaleString()} × {grid.rows.toLocaleString()}
+            </span>
           </p>
-        </fieldset>
+          {tooLarge && <p className="meta warning">This grid is too large. Use a bigger tool or smaller stock.</p>}
+        </div>
+      </section>
 
-        <fieldset>
-          <legend>Machine</legend>
+      <section className="section">
+        <h2 className="section-head">Machine</h2>
+        <div className="section-body">
           <NumberField
             label="Travel feedrate"
             unit="mm/min"
@@ -69,30 +73,31 @@ export function OutputSettings() {
             onChange={(v) => setSetting('heightPlunge', v)}
             disabled={busy}
           />
-        </fieldset>
+        </div>
+      </section>
 
-        <div className="actions">
-          <button
-            type="button"
-            className="button primary"
-            disabled={!source || busy || tooLarge}
-            onClick={() => void generate()}
-          >
-            {output ? 'Regenerate' : 'Generate G-code'}
-          </button>
-          {output && (
-            <a className="button" href={output.url} download={downloadName}>
+      <div className="output-footer">
+        {stale && <p className="meta warning">Settings changed since the last generate.</p>}
+        <button
+          type="button"
+          className="button primary block"
+          disabled={!source || busy || tooLarge}
+          onClick={() => void generate()}
+        >
+          {output ? 'Regenerate' : 'Generate G-code'}
+        </button>
+        {output && (
+          <>
+            <a className="button block" href={output.url} download={downloadName}>
               Download ZIP
             </a>
-          )}
-        </div>
-        {output && (
-          <p className="meta">
-            {output.totalDots.toLocaleString()} dots in {(output.elapsedMs / 1000).toFixed(1)} s
-          </p>
+            <p className="readout">
+              {output.totalDots.toLocaleString()} dots
+              <span className="mono">{(output.elapsedMs / 1000).toFixed(1)} s</span>
+            </p>
+          </>
         )}
-        {stale && <p className="meta warning">Settings changed since the last generate.</p>}
       </div>
-    </section>
+    </div>
   );
 }

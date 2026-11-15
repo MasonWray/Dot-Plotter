@@ -55,3 +55,11 @@ export function separateCmyk(rgba: ArrayLike<number>, width: number, height: num
 
   return { width, height, planes: { c, m, y, k } };
 }
+
+/** Average ink coverage of a plane, from 0 (no ink) to 1 (solid ink everywhere). */
+export function averageCoverage(plane: Uint8Array): number {
+  if (plane.length === 0) return 0;
+  let sum = 0;
+  for (let i = 0; i < plane.length; i++) sum += plane[i]!;
+  return sum / (plane.length * 255);
+}

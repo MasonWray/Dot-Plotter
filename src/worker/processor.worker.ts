@@ -1,6 +1,6 @@
 /// <reference lib="webworker" />
 import { zipSync } from 'fflate';
-import { separateCmyk } from '../core/cmyk';
+import { averageCoverage, separateCmyk } from '../core/cmyk';
 import { generateGcode } from '../core/gcode';
 import { rasterizeDots } from '../core/render';
 import { resamplePlane } from '../core/resample';
@@ -97,11 +97,20 @@ async function load(id: number, image: ImageBitmap): Promise<void> {
   source = separateCmyk(pixels, size.width, size.height);
 
   const rasters = {} as Record<Channel, ImageBitmap>;
+  const coverage = {} as Record<Channel, number>;
   for (const ch of CHANNELS) {
     rasters[ch] = rasterBitmap(source.planes[ch], size.width, size.height, CHANNEL_INFO[ch].color);
+    coverage[ch] = averageCoverage(source.planes[ch]);
   }
 
-  const result: LoadResult = { width: size.width, height: size.height, originalWidth, originalHeight, rasters };
+  const result: LoadResult = {
+    width: size.width,
+    height: size.height,
+    originalWidth,
+    originalHeight,
+    rasters,
+    coverage,
+  };
   post({ id, type: 'loaded', result }, Object.values(rasters));
 }
 
